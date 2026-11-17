@@ -2,1344 +2,2044 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#eaf7ff">
-
-  <title>PiKo — Your Space to Learn, Create, and Connect</title>
-
-  <meta name="description" content="PiKo is a free student platform where you can learn, organize your academic life, connect with other students, and grow together.">
-
-  <style>
-    /* =====================================
-       PIKO DESIGN SYSTEM
-    ===================================== */
-
-    :root {
-      --sky: #69bff0;
-      --sky-dark: #3299d0;
-      --sky-light: #eaf7ff;
-      --blue-soft: #d9f0ff;
-      --navy: #17344b;
-      --text: #38566d;
-      --muted: #7893a6;
-      --white: #ffffff;
-      --border: #e2eff7;
-      --orange: #ffb85c;
-      --shadow: 0 12px 35px rgba(57, 133, 180, 0.10);
-      --radius: 20px;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 90px;
-    }
-
-    body {
-      font-family: Inter, "Segoe UI", Arial, sans-serif;
-      background: #ffffff;
-      color: var(--navy);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    button {
-      font: inherit;
-      cursor: pointer;
-    }
-
-    .container {
-      width: min(1160px, 90%);
-      margin: auto;
-    }
-
-    /* =====================================
-       NAVIGATION
-    ===================================== */
-
-    .navbar {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-content {
-      height: 76px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 26px;
-      font-weight: 850;
-      letter-spacing: -1.5px;
-      color: var(--navy);
-    }
-
-    .brand-icon {
-      width: 39px;
-      height: 39px;
-      background: var(--sky-light);
-      display: grid;
-      place-items: center;
-      border-radius: 13px;
-      font-size: 23px;
-    }
-
-    .brand span {
-      color: var(--sky-dark);
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 34px;
-    }
-
-    .nav-links a {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      transition: color .2s;
-    }
-
-    .nav-links a:hover {
-      color: var(--sky-dark);
-    }
-
-    .nav-cta {
-      background: var(--sky-dark);
-      color: white !important;
-      padding: 11px 22px;
-      border-radius: 12px;
-      transition: .2s;
-    }
-
-    .nav-cta:hover {
-      background: #237eaf;
-      transform: translateY(-2px);
-    }
-
-    .menu-btn {
-      display: none;
-      background: var(--sky-light);
-      border: none;
-      border-radius: 10px;
-      width: 43px;
-      height: 43px;
-      font-size: 23px;
-      color: var(--navy);
-    }
-
-    /* =====================================
-       BUTTONS
-    ===================================== */
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      padding: 14px 25px;
-      border-radius: 13px;
-      font-size: 14px;
-      font-weight: 750;
-      transition: .25s ease;
-      border: 1px solid transparent;
-    }
-
-    .btn-primary {
-      background: var(--sky-dark);
-      color: white;
-      box-shadow: 0 7px 18px rgba(50,153,208,.20);
-    }
-
-    .btn-primary:hover {
-      background: #237eaf;
-      transform: translateY(-3px);
-      box-shadow: 0 12px 22px rgba(50,153,208,.25);
-    }
-
-    .btn-secondary {
-      background: white;
-      color: var(--navy);
-      border-color: var(--border);
-    }
-
-    .btn-secondary:hover {
-      background: var(--sky-light);
-      border-color: var(--sky);
-    }
-
-    /* =====================================
-       HERO SECTION
-    ===================================== */
-
-    .hero {
-      background:
-        radial-gradient(circle at 85% 20%, #d3efff 0, transparent 32%),
-        linear-gradient(135deg, #f4fbff, #e8f6ff);
-      padding: 95px 0 100px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      align-items: center;
-      gap: 50px;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: white;
-      border: 1px solid #d9effc;
-      color: var(--sky-dark);
-      padding: 8px 14px;
-      border-radius: 30px;
-      font-size: 12px;
-      font-weight: 800;
-      margin-bottom: 23px;
-    }
-
-    .eyebrow-dot {
-      width: 8px;
-      height: 8px;
-      background: #4cba91;
-      border-radius: 50%;
-    }
-
-    .hero h1 {
-      font-size: clamp(42px, 5.5vw, 68px);
-      line-height: 1.08;
-      letter-spacing: -3px;
-      font-weight: 850;
-      margin-bottom: 22px;
-      color: var(--navy);
-    }
-
-    .hero h1 span {
-      color: var(--sky-dark);
-    }
-
-    .hero-description {
-      max-width: 500px;
-      color: var(--text);
-      font-size: 17px;
-      line-height: 1.8;
-      margin-bottom: 32px;
-    }
-
-    .hero-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 13px;
-      margin-bottom: 35px;
-    }
-
-    .hero-note {
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    .hero-visual {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 420px;
-    }
-
-    .mascot-card {
-      width: 330px;
-      height: 360px;
-      background: white;
-      border: 1px solid white;
-      border-radius: 38px;
-      box-shadow: 0 25px 65px rgba(58,130,175,.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .mascot-circle {
-      position: absolute;
-      width: 255px;
-      height: 255px;
-      background: var(--blue-soft);
-      border-radius: 50%;
-    }
-
-    .penguin {
-      position: relative;
-      width: 180px;
-      height: 245px;
-      animation: float 3.2s ease-in-out infinite;
-      z-index: 2;
-    }
-
-    .penguin-body {
-      position: absolute;
-      width: 160px;
-      height: 205px;
-      left: 10px;
-      top: 25px;
-      background: #203d55;
-      border-radius: 48% 48% 44% 44%;
-      box-shadow: inset -9px -5px 0 rgba(0,0,0,.09);
-    }
-
-    .penguin-belly {
-      position: absolute;
-      width: 108px;
-      height: 145px;
-      left: 26px;
-      bottom: 5px;
-      background: white;
-      border-radius: 50% 50% 45% 45%;
-    }
-
-    .penguin-eye {
-      position: absolute;
-      top: 75px;
-      width: 12px;
-      height: 15px;
-      background: white;
-      border-radius: 50%;
-      z-index: 4;
-    }
-
-    .penguin-eye.left { left: 55px; }
-    .penguin-eye.right { right: 55px; }
-
-    .penguin-eye::after {
-      content: "";
-      width: 5px;
-      height: 7px;
-      background: #17344b;
-      border-radius: 50%;
-      position: absolute;
-      top: 4px;
-      left: 4px;
-    }
-
-    .penguin-beak {
-      position: absolute;
-      width: 27px;
-      height: 17px;
-      top: 96px;
-      left: 77px;
-      background: var(--orange);
-      clip-path: polygon(0 0, 100% 0, 50% 100%);
-      z-index: 5;
-    }
-
-    .penguin-foot {
-      position: absolute;
-      width: 45px;
-      height: 19px;
-      background: #ffa947;
-      border-radius: 50%;
-      bottom: 0;
-      z-index: 5;
-    }
-
-    .penguin-foot.left { left: 36px; }
-    .penguin-foot.right { right: 36px; }
-
-    .floating-tag {
-      position: absolute;
-      z-index: 5;
-      background: white;
-      border-radius: 14px;
-      padding: 12px 17px;
-      box-shadow: var(--shadow);
-      font-size: 12px;
-      font-weight: 750;
-      color: var(--navy);
-    }
-
-    .tag-top {
-      top: 50px;
-      left: -5px;
-    }
-
-    .tag-bottom {
-      bottom: 47px;
-      right: -12px;
-    }
-
-    @keyframes float {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
-
-    /* =====================================
-       SECTION COMMON
-    ===================================== */
-
-    .section {
-      padding: 90px 0;
-    }
-
-    .section-heading {
-      text-align: center;
-      max-width: 640px;
-      margin: 0 auto 48px;
-    }
-
-    .section-label {
-      color: var(--sky-dark);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-weight: 850;
-      margin-bottom: 12px;
-    }
-
-    .section-heading h2 {
-      font-size: clamp(30px,4vw,43px);
-      line-height: 1.2;
-      letter-spacing: -1.5px;
-      margin-bottom: 15px;
-    }
-
-    .section-heading p {
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.8;
-    }
-
-    /* =====================================
-       FEATURES
-    ===================================== */
-
-    .features {
-      background: white;
-    }
-
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      gap: 19px;
-    }
-
-    .feature-card {
-      border: 1px solid var(--border);
-      padding: 27px 22px;
-      border-radius: var(--radius);
-      background: white;
-      transition: .25s ease;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-7px);
-      border-color: #a8dcfa;
-      box-shadow: var(--shadow);
-    }
-
-    .feature-icon {
-      width: 51px;
-      height: 51px;
-      background: var(--sky-light);
-      border-radius: 15px;
-      display: grid;
-      place-items: center;
-      font-size: 24px;
-      margin-bottom: 22px;
-    }
-
-    .feature-card h3 {
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
-
-    .feature-card p {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-    /* =====================================
-       WHY PIKO
-    ===================================== */
-
-    .about {
-      background: #f2faff;
-    }
-
-    .about-grid {
-      display: grid;
-      grid-template-columns: .9fr 1.1fr;
-      align-items: center;
-      gap: 65px;
-    }
-
-    .about-visual {
-      background: linear-gradient(145deg, #d9f1ff, #bce5fa);
-      min-height: 350px;
-      border-radius: 30px;
-      display: grid;
-      place-items: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .about-visual .penguin {
-      transform: scale(1.05);
-    }
-
-    .about-copy h2 {
-      font-size: clamp(30px,4vw,43px);
-      letter-spacing: -1.5px;
-      line-height: 1.2;
-      margin-bottom: 20px;
-    }
-
-    .about-copy h2 span {
-      color: var(--sky-dark);
-    }
-
-    .about-copy > p {
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.9;
-      margin-bottom: 25px;
-    }
-
-    .about-list {
-      display: grid;
-      gap: 14px;
-    }
-
-    .about-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--text);
-      font-size: 14px;
-      font-weight: 650;
-    }
-
-    .check {
-      width: 25px;
-      height: 25px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      color: #238c6d;
-      background: #e2f7ee;
-      font-weight: 900;
-    }
-
-    /* =====================================
-       AI COMING SOON
-    ===================================== */
-
-    .ai-section {
-      padding: 75px 0;
-      background: white;
-    }
-
-    .ai-card {
-      background: linear-gradient(110deg,#e8f6ff,#f5fbff);
-      border: 1px solid #d9effc;
-      border-radius: 28px;
-      padding: 45px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 30px;
-      overflow: hidden;
-    }
-
-    .ai-content {
-      max-width: 590px;
-    }
-
-    .coming {
-      display: inline-block;
-      padding: 6px 12px;
-      border-radius: 30px;
-      background: #dcefff;
-      color: #227dae;
-      font-size: 11px;
-      font-weight: 850;
-      margin-bottom: 17px;
-    }
-
-    .ai-card h2 {
-      font-size: 31px;
-      letter-spacing: -1px;
-      margin-bottom: 12px;
-    }
-
-    .ai-card p {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.8;
-    }
-
-    .ai-icon {
-      font-size: 85px;
-      flex-shrink: 0;
-      padding: 10px 35px;
-    }
-
-    /* =====================================
-       CTA
-    ===================================== */
-
-    .cta {
-      background: var(--sky-dark);
-      padding: 75px 0;
-      text-align: center;
-      color: white;
-    }
-
-    .cta h2 {
-      font-size: clamp(30px,4vw,43px);
-      letter-spacing: -1px;
-      margin-bottom: 15px;
-    }
-
-    .cta p {
-      color: #e6f6ff;
-      font-size: 15px;
-      max-width: 580px;
-      margin: 0 auto 27px;
-      line-height: 1.8;
-    }
-
-    .cta .btn {
-      background: white;
-      color: var(--sky-dark);
-    }
-
-    .cta .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(0,0,0,.12);
-    }
-
-    /* =====================================
-       FOOTER
-    ===================================== */
-
-    footer {
-      background: #17344b;
-      color: white;
-      padding: 52px 0 22px;
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1.7fr 1fr 1fr;
-      gap: 45px;
-      padding-bottom: 38px;
-    }
-
-    .footer-brand {
-      font-size: 25px;
-      font-weight: 850;
-      margin-bottom: 13px;
-    }
-
-    .footer-brand span {
-      color: #76c9f5;
-    }
-
-    .footer-description {
-      max-width: 330px;
-      color: #b9d1e0;
-      font-size: 13px;
-      line-height: 1.8;
-    }
-
-    .footer-column h4 {
-      margin-bottom: 15px;
-      font-size: 13px;
-    }
-
-    .footer-column a {
-      display: block;
-      color: #b9d1e0;
-      font-size: 13px;
-      margin-bottom: 11px;
-    }
-
-    .footer-column a:hover {
-      color: white;
-    }
-
-    .footer-bottom {
-      border-top: 1px solid rgba(255,255,255,.13);
-      padding-top: 20px;
-      color: #a9c3d4;
-      font-size: 12px;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    /* =====================================
-       RESPONSIVE DESIGN
-    ===================================== */
-
-    @media(max-width: 900px) {
-      .feature-grid {
-        grid-template-columns: repeat(2,1fr);
-      }
-
-      .hero-grid,
-      .about-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-visual {
-        min-height: 380px;
-      }
-
-      .about-visual {
-        min-height: 320px;
-      }
-
-      .hero-copy {
-        text-align: center;
-      }
-
-      .hero-description {
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .hero-buttons {
-        justify-content: center;
-      }
-    }
-
-    @media(max-width: 700px) {
-      .menu-btn {
-        display: block;
-      }
-
-      .nav-links {
-        display: none;
-        position: absolute;
-        top: 76px;
-        left: 0;
-        right: 0;
-        background: white;
-        padding: 20px 5%;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0;
-        border-bottom: 1px solid var(--border);
-        box-shadow: var(--shadow);
-      }
-
-      .nav-links.active {
-        display: flex;
-      }
-
-      .nav-links a {
-        padding: 14px 5px;
-      }
-
-      .nav-cta {
-        text-align: center;
-        margin-top: 8px;
-      }
-
-      .hero {
-        padding: 65px 0;
-      }
-
-      .hero h1 {
-        letter-spacing: -2px;
-      }
-
-      .hero-description {
-        font-size: 15px;
-      }
-
-      .feature-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .section {
-        padding: 70px 0;
-      }
-
-      .ai-card {
-        padding: 30px 23px;
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .ai-icon {
-        align-self: center;
-        padding: 0;
-      }
-
-      .footer-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 30px;
-      }
-
-      .footer-brand-column {
-        grid-column: 1 / -1;
-      }
-
-      .footer-bottom {
-        flex-direction: column;
-      }
-    }
-
-    @media(max-width: 400px) {
-      .mascot-card {
-        width: 270px;
-        height: 320px;
-      }
-
-      .floating-tag {
-        font-size: 10px;
-      }
-
-      .hero-buttons {
-        flex-direction: column;
-      }
-
-      .hero-buttons .btn {
-        width: 100%;
-      }
-    }
-
-    @media(prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
-
-      *, *::before, *::after {
-        animation-duration: .01ms !important;
-        transition-duration: .01ms !important;
-      }
-    }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#edf8ff">
+<title>PiKo | Student Platform</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --primary: #55ace0;
+  --primary-dark: #328fc5;
+  --primary-light: #e5f5ff;
+  --background: #f5faff;
+  --surface: #ffffff;
+  --text: #19364c;
+  --muted: #8195a6;
+  --border: #e7f0f7;
+  --sidebar-width: 250px;
+  --shadow: 0 5px 22px rgba(45, 114, 157, .07);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--background);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* IMAGE PLACEHOLDERS */
+
+.image-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: none;
+}
+
+.image-icon.loaded {
+  display: block;
+}
+
+.icon-box {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-light);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.icon-box.small {
+  width: 34px;
+  height: 34px;
+}
+
+.icon-box img {
+  max-width: 24px;
+  max-height: 24px;
+  object-fit: contain;
+  display: none;
+}
+
+.icon-box img.loaded {
+  display: block;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: white;
+  border-right: 1px solid var(--border);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  transition: transform .3s ease;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 4px 10px 30px;
+}
+
+.brand img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.brand-name {
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+}
+
+.brand-name span {
+  color: var(--primary-dark);
+}
+
+.menu-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: #a1b1be;
+  padding: 15px 12px 9px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 11px;
+  color: #71879a;
+  font-size: 13px;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  text-align: left;
+  transition: .2s;
+}
+
+.nav-link:hover {
+  background: #f1f8fd;
+  color: var(--primary-dark);
+}
+
+.nav-link.active {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.nav-link .image-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.soon-label {
+  margin-left: auto;
+  font-size: 9px;
+  background: #f1eaff;
+  color: #9164c3;
+  padding: 4px 7px;
+  border-radius: 6px;
+  font-weight: 800;
+}
+
+.sidebar-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: 12px;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #dff2ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #328fc5;
+  font-size: 13px;
+  font-weight: 800;
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.user-info strong {
+  display: block;
+  font-size: 12px;
+}
+
+.user-info small {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* MAIN CONTENT */
+
+.main {
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+}
+
+.topbar {
+  height: 74px;
+  background: rgba(255,255,255,.93);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 34px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(12px);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.page-title {
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.search-box {
+  width: 280px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: #f4f9fd;
+  padding: 10px 13px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.search-box input {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.search-box img {
+  width: 17px;
+  height: 17px;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-button {
+  width: 39px;
+  height: 39px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  background: white;
+  position: relative;
+}
+
+.icon-button img {
+  width: 19px;
+  height: 19px;
+  object-fit: contain;
+}
+
+.mobile-menu {
+  display: none;
+}
+
+/* CONTENT */
+
+.content {
+  max-width: 1450px;
+  margin: auto;
+  padding: 32px 34px 50px;
+}
+
+.welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 29px;
+}
+
+.welcome h1 {
+  font-size: 25px;
+  letter-spacing: -.8px;
+  margin-bottom: 7px;
+}
+
+.welcome p {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.welcome-image {
+  width: 105px;
+  height: 105px;
+  object-fit: contain;
+}
+
+/* DASHBOARD CARDS */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.55fr .85fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 21px;
+  box-shadow: var(--shadow);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.card-header h2 {
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.card-header small {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.text-link {
+  color: var(--primary-dark);
+  font-size: 11px;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+}
+
+.recent-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 13px 0;
+  border-bottom: 1px solid #f0f5f8;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-icon {
+  width: 40px;
+  height: 40px;
+  background: #edf7fe;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.activity-icon img {
+  width: 21px;
+  height: 21px;
+  object-fit: contain;
+}
+
+.activity-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-info strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.activity-info p {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.activity-time {
+  font-size: 10px;
+  color: #9aabb9;
+  white-space: nowrap;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 35px 10px;
+}
+
+.empty-state img {
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+  margin: 0 auto 14px;
+}
+
+.empty-state h3 {
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.empty-state p {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* RECENT NOTES */
+
+.note-item {
+  padding: 13px 0;
+  border-bottom: 1px solid #f0f5f8;
+}
+
+.note-item:last-child {
+  border-bottom: none;
+}
+
+.note-item strong {
+  font-size: 12px;
+}
+
+.note-item p {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* TASKS */
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f5f8;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+.task-item input {
+  accent-color: var(--primary-dark);
+}
+
+.task-item label {
+  font-size: 11px;
+  flex: 1;
+}
+
+.task-item.done label {
+  text-decoration: line-through;
+  color: #9baab5;
+}
+
+.task-date {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* SHORTCUTS */
+
+.shortcuts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.shortcut {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 17px 12px;
+  text-align: center;
+  transition: .2s;
+}
+
+.shortcut:hover {
+  transform: translateY(-3px);
+  border-color: #a8dafa;
+  box-shadow: var(--shadow);
+}
+
+.shortcut img {
+  width: 27px;
+  height: 27px;
+  object-fit: contain;
+  margin: 0 auto 9px;
+}
+
+.shortcut strong {
+  display: block;
+  font-size: 10px;
+}
+
+/* MODULE PAGES */
+
+.page-section {
+  display: none;
+}
+
+.page-section.active {
+  display: block;
+}
+
+.module-heading {
+  margin-bottom: 23px;
+}
+
+.module-heading h1 {
+  font-size: 23px;
+  margin-bottom: 5px;
+}
+
+.module-heading p {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 13px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+  margin-bottom: 12px;
+  background: white;
+  color: var(--text);
+  font-size: 12px;
+}
+
+.form-control:focus {
+  border-color: var(--primary);
+}
+
+textarea.form-control {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.primary-btn {
+  background: var(--primary-dark);
+  color: white;
+  border: none;
+  padding: 11px 18px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.secondary-btn {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  border: none;
+  padding: 10px 15px;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.module-list {
+  margin-top: 18px;
+}
+
+.module-entry {
+  background: white;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.module-entry h3 {
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.module-entry p {
+  font-size: 11px;
+  color: var(--muted);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.coming-card {
+  max-width: 620px;
+  margin: 40px auto;
+  text-align: center;
+  padding: 45px 25px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+
+.coming-card img {
+  width: 125px;
+  height: 125px;
+  object-fit: contain;
+  margin-bottom: 20px;
+}
+
+.coming-card h2 {
+  margin-bottom: 10px;
+  font-size: 21px;
+}
+
+.coming-card p {
+  max-width: 410px;
+  margin: auto;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+/* TOAST */
+
+.toast {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: #193b54;
+  color: white;
+  padding: 13px 19px;
+  font-size: 12px;
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateY(15px);
+  pointer-events: none;
+  transition: .25s;
+  z-index: 500;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* DARK MODE */
+
+body.dark {
+  --background: #142637;
+  --surface: #1e3447;
+  --text: #e3f1fa;
+  --muted: #9bb3c5;
+  --border: #30495d;
+  --primary-light: #27485f;
+  background: var(--background);
+  color: var(--text);
+}
+
+body.dark .sidebar,
+body.dark .topbar,
+body.dark .card,
+body.dark .shortcut,
+body.dark .module-entry,
+body.dark .coming-card,
+body.dark .icon-button {
+  background: #1e3447;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+body.dark .search-box,
+body.dark .activity-icon,
+body.dark .icon-box {
+  background: #27485f;
+}
+
+body.dark .nav-link {
+  color: #b6cbd9;
+}
+
+body.dark .nav-link.active,
+body.dark .nav-link:hover {
+  background: #27485f;
+  color: #82d0ff;
+}
+
+body.dark .form-control {
+  background: #142637;
+  color: white;
+  border-color: var(--border);
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 1050px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media(max-width: 850px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 15px 0 35px rgba(0,0,0,.1);
+  }
+
+  .main {
+    margin-left: 0;
+  }
+
+  .mobile-menu {
+    display: grid;
+  }
+
+  .topbar {
+    padding: 0 18px;
+  }
+
+  .content {
+    padding: 25px 18px;
+  }
+}
+
+@media(max-width: 600px) {
+  .search-box {
+    width: 160px;
+  }
+
+  .welcome h1 {
+    font-size: 21px;
+  }
+
+  .welcome-image {
+    width: 75px;
+    height: 75px;
+  }
+
+  .shortcuts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .activity-time {
+    display: none;
+  }
+}
+
+@media(max-width: 390px) {
+  .search-box {
+    width: 115px;
+  }
+
+  .topbar {
+    gap: 7px;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <!-- =================================
-       NAVIGATION
-  ================================== -->
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
 
-  <header class="navbar">
-    <div class="container nav-content">
+  <div class="brand">
+    <img src="assets/images/piko-logo.png" alt="PiKo Logo">
+    <div class="brand-name">Pi<span>Ko</span></div>
+  </div>
 
-      <a href="#home" class="brand">
-        <div class="brand-icon">🐧</div>
-        Pi<span>Ko</span>
-      </a>
+  <div class="menu-label">MAIN MENU</div>
 
-      <button
-        class="menu-btn"
-        id="menuBtn"
-        aria-label="Open navigation menu"
-        aria-expanded="false"
-        aria-controls="navLinks"
-      >
-        ☰
+  <nav class="sidebar-nav">
+
+    <button class="nav-link active" data-page="home">
+      <img class="image-icon" src="assets/icons/home.png" alt="">
+      Home
+    </button>
+
+    <button class="nav-link" data-page="passport">
+      <img class="image-icon" src="assets/icons/passport.png" alt="">
+      Student Passport
+    </button>
+
+    <button class="nav-link" data-page="community">
+      <img class="image-icon" src="assets/icons/community.png" alt="">
+      Student Community
+    </button>
+
+    <button class="nav-link" data-page="library">
+      <img class="image-icon" src="assets/icons/library.png" alt="">
+      Digital Library
+    </button>
+
+    <button class="nav-link" data-page="planner">
+      <img class="image-icon" src="assets/icons/planner.png" alt="">
+      Student Planner
+    </button>
+
+    <button class="nav-link" data-page="notes">
+      <img class="image-icon" src="assets/icons/notes.png" alt="">
+      Personal Notes
+    </button>
+
+    <button class="nav-link" data-page="calculator">
+      <img class="image-icon" src="assets/icons/calculator.png" alt="">
+      Student Calculator
+    </button>
+
+    <button class="nav-link" data-page="flashcards">
+      <img class="image-icon" src="assets/icons/flashcards.png" alt="">
+      Flashcards & Review
+    </button>
+
+    <button class="nav-link" data-page="partners">
+      <img class="image-icon" src="assets/icons/study-partners.png" alt="">
+      Study Partner Finder
+    </button>
+
+    <button class="nav-link" data-page="ai">
+      <img class="image-icon" src="assets/icons/ai-tutor.png" alt="">
+      AI Tutor
+      <span class="soon-label">SOON</span>
+    </button>
+
+    <div class="menu-label">ACCOUNT</div>
+
+    <button class="nav-link" data-page="notifications">
+      <img class="image-icon" src="assets/icons/notifications.png" alt="">
+      Notifications
+    </button>
+
+    <button class="nav-link" data-page="settings">
+      <img class="image-icon" src="assets/icons/settings.png" alt="">
+      Settings
+    </button>
+
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="user-card">
+      <div class="avatar" id="sidebarAvatar">S</div>
+      <div class="user-info">
+        <strong id="sidebarName">Student</strong>
+        <small>Student Account</small>
+      </div>
+    </div>
+  </div>
+
+</aside>
+
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+
+    <div class="topbar-left">
+
+      <button class="icon-button mobile-menu" id="mobileMenu">
+        <img src="assets/icons/menu.png" alt="Menu">
       </button>
 
-      <nav class="nav-links" id="navLinks">
-        <a href="#home">Home</a>
-        <a href="#features">Features</a>
-        <a href="#about">About PiKo</a>
-        <a href="#ai">PiKo AI</a>
-        <a href="#get-started" class="nav-cta">Explore PiKo →</a>
-      </nav>
+      <div class="page-title" id="pageTitle">Home</div>
 
     </div>
+
+    <div class="topbar-actions">
+
+      <div class="search-box">
+        <img src="assets/icons/search.png" alt="Search">
+        <input id="globalSearch" type="search" placeholder="Search PiKo...">
+      </div>
+
+      <button class="icon-button" id="darkMode" title="Toggle dark mode">
+        <img src="assets/icons/dark-mode.png" alt="Dark Mode">
+      </button>
+
+      <button class="icon-button" id="notificationBtn" title="Notifications">
+        <img src="assets/icons/notifications.png" alt="Notifications">
+      </button>
+
+      <button class="icon-button" id="profileBtn" title="Profile">
+        <img src="assets/icons/profile.png" alt="Profile">
+      </button>
+
+    </div>
+
   </header>
 
 
-  <main>
+  <main class="content">
 
-    <!-- =================================
-         HERO SECTION
-    ================================== -->
+    <!-- HOME PAGE -->
+    <section class="page-section active" id="page-home">
 
-    <section class="hero" id="home">
+      <div class="welcome">
 
-      <div class="container hero-grid">
-
-        <div class="hero-copy">
-
-          <div class="eyebrow">
-            <span class="eyebrow-dot"></span>
-            A PLATFORM MADE FOR STUDENTS
-          </div>
-
-          <h1>
-            Your space to
-            <span>learn, create,</span>
-            and connect.
-          </h1>
-
-          <p class="hero-description">
-            Meet PiKo — your digital student companion.
-            Discover learning resources, organize your academic
-            life, and connect with students from different places.
-          </p>
-
-          <div class="hero-buttons">
-            <a href="#features" class="btn btn-primary">
-              Explore Features →
-            </a>
-
-            <a href="#about" class="btn btn-secondary">
-              Discover PiKo
-            </a>
-          </div>
-
-          <div class="hero-note">
-            ✦ Free to use · Designed for every student
-          </div>
-
+        <div>
+          <h1>Welcome back, <span id="welcomeName">Student</span></h1>
+          <p id="currentDate">Your personal space.</p>
         </div>
 
+        <img
+          src="assets/images/piko-penguin.png"
+          alt="PiKo Penguin"
+          class="welcome-image"
+        >
 
-        <div class="hero-visual">
+      </div>
 
-          <div class="floating-tag tag-top">
-            📚 Learn something new
+
+      <div class="dashboard-grid">
+
+        <section class="card">
+
+          <div class="card-header">
+            <h2>Recent Activity</h2>
+            <small>Your latest activities</small>
           </div>
 
-          <div class="mascot-card">
+          <div id="recentActivities" class="recent-list">
 
-            <div class="mascot-circle"></div>
-
-            <div class="penguin">
-
-              <div class="penguin-body">
-                <div class="penguin-belly"></div>
-              </div>
-
-              <div class="penguin-eye left"></div>
-              <div class="penguin-eye right"></div>
-              <div class="penguin-beak"></div>
-
-              <div class="penguin-foot left"></div>
-              <div class="penguin-foot right"></div>
-
+            <div class="empty-state">
+              <img src="assets/images/empty-activity.png" alt="No recent activity">
+              <h3>No recent activity yet</h3>
+              <p>Your recent work will appear here.</p>
             </div>
 
           </div>
 
-          <div class="floating-tag tag-bottom">
-            💙 Grow at your own pace
+        </section>
+
+
+        <section class="card">
+
+          <div class="card-header">
+            <h2>Upcoming Tasks</h2>
+            <button class="text-link" onclick="showPage('planner')">
+              View all
+            </button>
           </div>
+
+          <div id="homeTasks"></div>
+
+        </section>
+
+      </div>
+
+
+      <section class="card" style="margin-top:20px">
+
+        <div class="card-header">
+          <h2>Recently Updated Notes</h2>
+          <button class="text-link" onclick="showPage('notes')">
+            Open notes
+          </button>
+        </div>
+
+        <div id="recentNotes"></div>
+
+      </section>
+
+
+      <section style="margin-top:25px">
+
+        <div class="card-header">
+          <h2>Quick Navigation</h2>
+        </div>
+
+        <div class="shortcuts">
+
+          <button class="shortcut" onclick="showPage('passport')">
+            <img src="assets/icons/passport.png" alt="">
+            <strong>My Passport</strong>
+          </button>
+
+          <button class="shortcut" onclick="showPage('library')">
+            <img src="assets/icons/library.png" alt="">
+            <strong>Digital Library</strong>
+          </button>
+
+          <button class="shortcut" onclick="showPage('planner')">
+            <img src="assets/icons/planner.png" alt="">
+            <strong>My Planner</strong>
+          </button>
+
+          <button class="shortcut" onclick="showPage('notes')">
+            <img src="assets/icons/notes.png" alt="">
+            <strong>Personal Notes</strong>
+          </button>
+
+          <button class="shortcut" onclick="showPage('calculator')">
+            <img src="assets/icons/calculator.png" alt="">
+            <strong>Calculator</strong>
+          </button>
+
+          <button class="shortcut" onclick="showPage('flashcards')">
+            <img src="assets/icons/flashcards.png" alt="">
+            <strong>Flashcards</strong>
+          </button>
+
+          <button class="shortcut" onclick="showPage('community')">
+            <img src="assets/icons/community.png" alt="">
+            <strong>Community</strong>
+          </button>
+
+          <button class="shortcut" onclick="showPage('partners')">
+            <img src="assets/icons/study-partners.png" alt="">
+            <strong>Study Partners</strong>
+          </button>
 
         </div>
 
-      </div>
+      </section>
 
     </section>
 
 
-    <!-- =================================
-         FEATURES
-    ================================== -->
-
-    <section class="section features" id="features">
-
-      <div class="container">
-
-        <div class="section-heading">
-
-          <div class="section-label">
-            WHAT PIKO OFFERS
-          </div>
-
-          <h2>
-            Everything students need,
-            <span style="color:#3299d0;">in one place.</span>
-          </h2>
-
-          <p>
-            Explore tools that make learning, organizing,
-            and connecting with other students easier.
-          </p>
-
-        </div>
-
-
-        <div class="feature-grid">
-
-          <article class="feature-card">
-            <div class="feature-icon">🪪</div>
-            <h3>Student Passport</h3>
-            <p>
-              Keep your achievements, certificates,
-              skills, and experiences in one digital portfolio.
-            </p>
-          </article>
-
-          <article class="feature-card">
-            <div class="feature-icon">👥</div>
-            <h3>Student Community</h3>
-            <p>
-              Share ideas, ask academic questions,
-              join discussions, and connect with students.
-            </p>
-          </article>
-
-          <article class="feature-card">
-            <div class="feature-icon">📚</div>
-            <h3>Digital Library</h3>
-            <p>
-              Discover reviewers, notes, PDFs,
-              and useful educational materials.
-            </p>
-          </article>
-
-          <article class="feature-card">
-            <div class="feature-icon">📅</div>
-            <h3>Student Planner</h3>
-            <p>
-              Organize class schedules, assignments,
-              deadlines, examinations, and reminders.
-            </p>
-          </article>
-
-          <article class="feature-card">
-            <div class="feature-icon">📝</div>
-            <h3>Personal Notes</h3>
-            <p>
-              Create, edit, save, and organize
-              your personal digital notes.
-            </p>
-          </article>
-
-          <article class="feature-card">
-            <div class="feature-icon">🧮</div>
-            <h3>Student Calculator</h3>
-            <p>
-              Use helpful calculators for
-              common academic computations.
-            </p>
-          </article>
-
-          <article class="feature-card">
-            <div class="feature-icon">🗂️</div>
-            <h3>Flashcards and Review</h3>
-            <p>
-              Create flashcards, practice questions,
-              and review your lessons.
-            </p>
-          </article>
-
-          <article class="feature-card">
-            <div class="feature-icon">🤝</div>
-            <h3>Study Partner Finder</h3>
-            <p>
-              Discover study buddies and groups
-              with similar subjects and interests.
-            </p>
-          </article>
-
-        </div>
-
+    <!-- STUDENT PASSPORT -->
+    <section class="page-section" id="page-passport">
+      <div class="module-heading">
+        <h1>Student Passport</h1>
+        <p>My personal student portfolio.</p>
       </div>
 
+      <div class="card">
+        <input class="form-control" id="passportName" placeholder="Full name">
+        <input class="form-control" id="passportEducation" placeholder="Grade level / College year">
+        <input class="form-control" id="passportSchool" placeholder="School name">
+        <textarea class="form-control" id="passportBio" placeholder="Personal introduction"></textarea>
+        <input class="form-control" id="passportSkills" placeholder="Skills (separate with commas)">
+        <button class="primary-btn" onclick="savePassport()">Save Passport</button>
+      </div>
+
+      <div class="module-list" id="passportDisplay"></div>
     </section>
 
 
-    <!-- =================================
-         ABOUT PIKO
-    ================================== -->
-
-    <section class="section about" id="about">
-
-      <div class="container about-grid">
-
-        <div class="about-visual">
-
-          <div class="penguin">
-
-            <div class="penguin-body">
-              <div class="penguin-belly"></div>
-            </div>
-
-            <div class="penguin-eye left"></div>
-            <div class="penguin-eye right"></div>
-            <div class="penguin-beak"></div>
-
-            <div class="penguin-foot left"></div>
-            <div class="penguin-foot right"></div>
-
-          </div>
-
-        </div>
-
-
-        <div class="about-copy">
-
-          <div class="section-label">
-            GET TO KNOW PIKO
-          </div>
-
-          <h2>
-            More than a platform.
-            <span>A student companion.</span>
-          </h2>
-
-          <p>
-            PiKo is designed to bring useful student tools
-            together in one accessible digital space.
-
-            Whether you want to organize your academic tasks,
-            discover learning materials, or connect with others,
-            PiKo is here to make your student experience better.
-          </p>
-
-          <div class="about-list">
-
-            <div class="about-item">
-              <span class="check">✓</span>
-              Designed for JHS, SHS, and College students
-            </div>
-
-            <div class="about-item">
-              <span class="check">✓</span>
-              Simple and user-friendly experience
-            </div>
-
-            <div class="about-item">
-              <span class="check">✓</span>
-              Accessible through a responsive website
-            </div>
-
-            <div class="about-item">
-              <span class="check">✓</span>
-              Free core student features
-            </div>
-
-          </div>
-
-        </div>
-
+    <!-- COMMUNITY -->
+    <section class="page-section" id="page-community">
+      <div class="module-heading">
+        <h1>Student Community</h1>
+        <p>Community discussions and posts.</p>
       </div>
 
+      <div class="card">
+        <input class="form-control" id="postTitle" placeholder="Post title">
+        <select class="form-control" id="postCategory">
+          <option>Academics</option>
+          <option>Study Tips</option>
+          <option>General Discussion</option>
+          <option>Student Experiences</option>
+          <option>Achievements</option>
+        </select>
+        <textarea class="form-control" id="postContent" placeholder="Write your post..."></textarea>
+        <button class="primary-btn" onclick="createPost()">Publish Post</button>
+      </div>
+
+      <div class="module-list" id="communityPosts"></div>
     </section>
 
 
-    <!-- =================================
-         AI COMING SOON
-    ================================== -->
-
-    <section class="ai-section" id="ai">
-
-      <div class="container">
-
-        <div class="ai-card">
-
-          <div class="ai-content">
-
-            <div class="coming">
-              ✨ COMING SOON
-            </div>
-
-            <h2>Meet PiKo AI.</h2>
-
-            <p>
-              Your future learning companion.
-              Get help understanding difficult lessons,
-              exploring new topics, and practicing
-              your knowledge with an AI-powered assistant.
-            </p>
-
-            <br>
-
-            <span class="hero-note">
-              PiKo AI is currently under development.
-            </span>
-
-          </div>
-
-          <div class="ai-icon">🐧💡</div>
-
-        </div>
-
+    <!-- LIBRARY -->
+    <section class="page-section" id="page-library">
+      <div class="module-heading">
+        <h1>Digital Library</h1>
+        <p>Personal resource collection.</p>
       </div>
 
+      <div class="card">
+        <input class="form-control" id="resourceTitle" placeholder="Resource title">
+        <input class="form-control" id="resourceSubject" placeholder="Subject">
+        <input class="form-control" id="resourceLink" placeholder="Resource link (optional)">
+        <button class="primary-btn" onclick="addResource()">Add Resource</button>
+      </div>
+
+      <div class="module-list" id="libraryList"></div>
     </section>
 
 
-    <!-- =================================
-         FINAL CTA
-    ================================== -->
+    <!-- PLANNER -->
+    <section class="page-section" id="page-planner">
+      <div class="module-heading">
+        <h1>Student Planner</h1>
+        <p>My schedules, assignments, and deadlines.</p>
+      </div>
 
-    <section class="cta" id="get-started">
+      <div class="card">
+        <input class="form-control" id="taskTitle" placeholder="Task or assignment title">
+        <input class="form-control" id="taskDate" type="date">
+        <select class="form-control" id="taskType">
+          <option>Assignment</option>
+          <option>Examination</option>
+          <option>Class Schedule</option>
+          <option>Study Reminder</option>
+        </select>
+        <button class="primary-btn" onclick="addTask()">Add to Planner</button>
+      </div>
 
-      <div class="container">
+      <div class="module-list" id="taskList"></div>
+    </section>
 
-        <h2>Ready to explore PiKo?</h2>
 
+    <!-- NOTES -->
+    <section class="page-section" id="page-notes">
+      <div class="module-heading">
+        <h1>Personal Notes</h1>
+        <p>My saved notes.</p>
+      </div>
+
+      <div class="card">
+        <input class="form-control" id="noteTitle" placeholder="Note title">
+        <textarea class="form-control" id="noteContent" placeholder="Write your notes here..."></textarea>
+        <button class="primary-btn" onclick="addNote()">Save Note</button>
+      </div>
+
+      <div class="module-list" id="notesList"></div>
+    </section>
+
+
+    <!-- CALCULATOR -->
+    <section class="page-section" id="page-calculator">
+      <div class="module-heading">
+        <h1>Student Calculator</h1>
+        <p>Academic calculator.</p>
+      </div>
+
+      <div class="card" style="max-width:400px">
+
+        <input class="form-control" id="calcDisplay" readonly placeholder="0">
+
+        <div class="calc-buttons">
+          <style>
+            .calc-buttons {
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 9px;
+            }
+            .calc-buttons button {
+              background: #e9f6ff;
+              border: none;
+              border-radius: 9px;
+              padding: 15px 5px;
+              color: #247eae;
+              font-weight: 700;
+            }
+            .calc-buttons button:hover {
+              background: #d5eeff;
+            }
+          </style>
+
+          <button onclick="calcClear()">AC</button>
+          <button onclick="calcAdd('(')">(</button>
+          <button onclick="calcAdd(')')">)</button>
+          <button onclick="calcAdd('/')">÷</button>
+
+          <button onclick="calcAdd('7')">7</button>
+          <button onclick="calcAdd('8')">8</button>
+          <button onclick="calcAdd('9')">9</button>
+          <button onclick="calcAdd('*')">×</button>
+
+          <button onclick="calcAdd('4')">4</button>
+          <button onclick="calcAdd('5')">5</button>
+          <button onclick="calcAdd('6')">6</button>
+          <button onclick="calcAdd('-')">−</button>
+
+          <button onclick="calcAdd('1')">1</button>
+          <button onclick="calcAdd('2')">2</button>
+          <button onclick="calcAdd('3')">3</button>
+          <button onclick="calcAdd('+')">+</button>
+
+          <button onclick="calcClear()">C</button>
+          <button onclick="calcAdd('0')">0</button>
+          <button onclick="calcAdd('.')">.</button>
+          <button onclick="calcResult()">=</button>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- FLASHCARDS -->
+    <section class="page-section" id="page-flashcards">
+      <div class="module-heading">
+        <h1>Flashcards and Review</h1>
+        <p>My review decks.</p>
+      </div>
+
+      <div class="card">
+        <input class="form-control" id="deckTitle" placeholder="Deck title">
+        <input class="form-control" id="deckSubject" placeholder="Subject">
+        <button class="primary-btn" onclick="addDeck()">Create Deck</button>
+      </div>
+
+      <div class="module-list" id="decksList"></div>
+    </section>
+
+
+    <!-- STUDY PARTNERS -->
+    <section class="page-section" id="page-partners">
+      <div class="module-heading">
+        <h1>Study Partner Finder</h1>
+        <p>My study interests and preferences.</p>
+      </div>
+
+      <div class="card">
+        <input class="form-control" id="studyLevel" placeholder="Grade level or College year">
+        <input class="form-control" id="studySubjects" placeholder="Subjects of interest">
+        <input class="form-control" id="studyLanguage" placeholder="Preferred language">
+        <button class="primary-btn" onclick="saveStudyProfile()">Save Preferences</button>
+      </div>
+
+      <div class="module-list" id="studyDisplay"></div>
+    </section>
+
+
+    <!-- AI TUTOR -->
+    <section class="page-section" id="page-ai">
+      <div class="coming-card">
+        <img src="assets/images/piko-penguin.png" alt="PiKo Penguin">
+        <h2>PiKo AI Tutor</h2>
         <p>
-          Discover a better way to organize your
-          student life, explore resources, and
-          connect with your learning community.
+          This feature is currently under development.
+          PiKo AI will be introduced in a future update.
         </p>
+        <br>
+        <span class="soon-label">COMING SOON</span>
+      </div>
+    </section>
 
-        <a href="#features" class="btn">
-          Discover PiKo Features →
-        </a>
 
+    <!-- NOTIFICATIONS -->
+    <section class="page-section" id="page-notifications">
+      <div class="module-heading">
+        <h1>Notifications</h1>
+        <p>My recent notifications.</p>
+      </div>
+      <div class="card" id="notificationList">
+        <p style="font-size:12px;color:var(--muted)">No notifications yet.</p>
+      </div>
+    </section>
+
+
+    <!-- SETTINGS -->
+    <section class="page-section" id="page-settings">
+      <div class="module-heading">
+        <h1>Settings</h1>
+        <p>Account and application preferences.</p>
       </div>
 
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:15px">Profile Information</h3>
+        <input class="form-control" id="settingsName" placeholder="Display name">
+        <button class="primary-btn" onclick="updateName()">Update Profile</button>
+
+        <hr style="border:0;border-top:1px solid var(--border);margin:25px 0">
+
+        <h3 style="font-size:14px;margin-bottom:12px">Appearance</h3>
+        <button class="secondary-btn" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+      </div>
     </section>
 
   </main>
+</div>
 
 
-  <!-- =================================
-       FOOTER
-  ================================== -->
+<div class="toast" id="toast"></div>
 
-  <footer>
 
-    <div class="container">
+<script>
+/* =====================================
+   PIKO LOCAL DEMO APPLICATION
+===================================== */
 
-      <div class="footer-grid">
+const $ = id => document.getElementById(id);
 
-        <div class="footer-brand-column">
+function readData(key, fallback = []) {
+  try {
+    const value = JSON.parse(localStorage.getItem("piko_" + key));
+    return value ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
 
-          <div class="footer-brand">
-            🐧 Pi<span>Ko</span>
-          </div>
+function saveData(key, value) {
+  localStorage.setItem("piko_" + key, JSON.stringify(value));
+}
 
-          <p class="footer-description">
-            Your space to learn, create, and connect.
-            A digital student platform designed
-            to bring students and useful tools together.
-          </p>
+function showToast(message) {
+  const toast = $("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2500);
+}
 
+
+/* IMAGE HANDLING
+   Missing image files are simply hidden.
+*/
+
+document.querySelectorAll("img").forEach(img => {
+  if (img.complete && img.naturalWidth > 0) {
+    img.classList.add("loaded");
+  }
+
+  img.addEventListener("load", () => {
+    img.classList.add("loaded");
+  });
+
+  img.addEventListener("error", () => {
+    img.classList.remove("loaded");
+  });
+});
+
+
+/* NAVIGATION */
+
+const pageNames = {
+  home: "Home",
+  passport: "Student Passport",
+  community: "Student Community",
+  library: "Digital Library",
+  planner: "Student Planner",
+  notes: "Personal Notes",
+  calculator: "Student Calculator",
+  flashcards: "Flashcards & Review",
+  partners: "Study Partner Finder",
+  ai: "AI Tutor",
+  notifications: "Notifications",
+  settings: "Settings"
+};
+
+function showPage(page) {
+  document.querySelectorAll(".page-section").forEach(section => {
+    section.classList.remove("active");
+  });
+
+  const target = $("page-" + page);
+  if (!target) return;
+
+  target.classList.add("active");
+
+  document.querySelectorAll(".nav-link").forEach(link => {
+    link.classList.toggle("active", link.dataset.page === page);
+  });
+
+  $("pageTitle").textContent = pageNames[page] || "PiKo";
+
+  $("sidebar").classList.remove("open");
+
+  if (page === "home") renderHome();
+  if (page === "notes") renderNotes();
+  if (page === "planner") renderTasks();
+  if (page === "community") renderPosts();
+  if (page === "library") renderLibrary();
+  if (page === "passport") renderPassport();
+  if (page === "flashcards") renderDecks();
+  if (page === "partners") renderStudyProfile();
+  if (page === "notifications") renderNotifications();
+  if (page === "settings") {
+    $("settingsName").value = localStorage.getItem("piko_name") || "";
+  }
+
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+
+document.querySelectorAll(".nav-link").forEach(link => {
+  link.addEventListener("click", () => showPage(link.dataset.page));
+});
+
+$("mobileMenu").addEventListener("click", () => {
+  $("sidebar").classList.toggle("open");
+});
+
+$("profileBtn").addEventListener("click", () => showPage("settings"));
+$("notificationBtn").addEventListener("click", () => showPage("notifications"));
+
+
+/* DASHBOARD DATE AND USER */
+
+function updateDate() {
+  const date = new Date();
+
+  $("currentDate").textContent = date.toLocaleDateString("en-PH", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+}
+
+function updateUser() {
+  const name = localStorage.getItem("piko_name") || "Student";
+  $("welcomeName").textContent = name.split(" ")[0];
+  $("sidebarName").textContent = name;
+  $("sidebarAvatar").textContent = name.charAt(0).toUpperCase();
+  $("settingsName").value = name;
+}
+
+function addActivity(type, title, detail) {
+  const activities = readData("activities");
+
+  activities.unshift({
+    type,
+    title,
+    detail,
+    date: new Date().toISOString()
+  });
+
+  saveData("activities", activities.slice(0, 30));
+}
+
+const activityIconPaths = {
+  notes: "assets/icons/notes.png",
+  planner: "assets/icons/planner.png",
+  community: "assets/icons/community.png",
+  library: "assets/icons/library.png",
+  flashcards: "assets/icons/flashcards.png",
+  passport: "assets/icons/passport.png",
+  calculator: "assets/icons/calculator.png",
+  partners: "assets/icons/study-partners.png"
+};
+
+function renderHome() {
+  const activities = readData("activities");
+  const container = $("recentActivities");
+
+  if (!activities.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <img src="assets/images/empty-activity.png" alt="">
+        <h3>No recent activity yet</h3>
+        <p>Your recent work will appear here.</p>
+      </div>`;
+  } else {
+    container.innerHTML = activities.slice(0, 8).map(item => `
+      <div class="activity-item">
+        <div class="activity-icon">
+          <img src="${activityIconPaths[item.type] || activityIconPaths.notes}" alt="">
         </div>
-
-
-        <div class="footer-column">
-
-          <h4>Explore</h4>
-
-          <a href="#home">Home</a>
-          <a href="#features">Features</a>
-          <a href="#about">About PiKo</a>
-          <a href="#ai">PiKo AI</a>
-
+        <div class="activity-info">
+          <strong>${escapeHTML(item.title)}</strong>
+          <p>${escapeHTML(item.detail || "")}</p>
         </div>
-
-
-        <div class="footer-column">
-
-          <h4>Platform</h4>
-
-          <a href="#features">Student Tools</a>
-          <a href="#features">Digital Library</a>
-          <a href="#features">Student Community</a>
-          <a href="#get-started">Get Started</a>
-
-        </div>
-
+        <div class="activity-time">${timeAgo(item.date)}</div>
       </div>
+    `).join("");
+  }
+
+  renderRecentNotes();
+  renderHomeTasks();
+}
 
 
-      <div class="footer-bottom">
+/* NOTES */
 
-        <p>
-          © <span id="year"></span> PiKo. All rights reserved.
-        </p>
+function addNote() {
+  const title = $("noteTitle").value.trim();
+  const content = $("noteContent").value.trim();
 
-        <p>
-          Made for students, with 💙
-        </p>
+  if (!title || !content) {
+    showToast("Please enter a note title and content.");
+    return;
+  }
 
+  const notes = readData("notes");
+
+  notes.unshift({
+    id: Date.now(),
+    title,
+    content,
+    updatedAt: new Date().toISOString()
+  });
+
+  saveData("notes", notes);
+  addActivity("notes", "Created a new note", title);
+
+  $("noteTitle").value = "";
+  $("noteContent").value = "";
+
+  renderNotes();
+  showToast("Note saved successfully.");
+}
+
+function renderNotes() {
+  const notes = readData("notes");
+
+  $("notesList").innerHTML = notes.length
+    ? notes.map(note => `
+      <div class="module-entry">
+        <h3>${escapeHTML(note.title)}</h3>
+        <p>${escapeHTML(note.content)}</p>
+        <br>
+        <button class="secondary-btn" onclick="deleteNote(${note.id})">Delete</button>
       </div>
+    `).join("")
+    : emptyMessage("No notes yet.");
 
-    </div>
+  renderRecentNotes();
+}
 
-  </footer>
+function deleteNote(id) {
+  saveData("notes", readData("notes").filter(n => n.id !== id));
+  showToast("Note deleted.");
+  renderNotes();
+  renderHome();
+}
 
+function renderRecentNotes() {
+  const notes = readData("notes").slice(0, 3);
 
-  <!-- =================================
-       JAVASCRIPT
-  ================================== -->
-
-  <script>
-
-    // Mobile navigation toggle
-
-    const menuBtn = document.getElementById("menuBtn");
-    const navLinks = document.getElementById("navLinks");
-
-    menuBtn.addEventListener("click", () => {
-
-      const isOpen = navLinks.classList.toggle("active");
-
-      menuBtn.setAttribute("aria-expanded", isOpen);
-      menuBtn.textContent = isOpen ? "✕" : "☰";
-
-    });
-
-
-    // Close mobile menu after clicking a link
-
-    document.querySelectorAll(".nav-links a").forEach(link => {
-
-      link.addEventListener("click", () => {
-
-        navLinks.classList.remove("active");
-
-        menuBtn.setAttribute("aria-expanded", "false");
-        menuBtn.textContent = "☰";
-
-      });
-
-    });
+  $("recentNotes").innerHTML = notes.length
+    ? notes.map(note => `
+      <div class="note-item">
+        <strong>${escapeHTML(note.title)}</strong>
+        <p>${escapeHTML(note.content.substring(0, 90))}</p>
+      </div>
+    `).join("")
+    : `<p style="color:var(--muted);font-size:11px">No saved notes yet.</p>`;
+}
 
 
-    // Automatic copyright year
+/* PLANNER */
 
-    document.getElementById("year").textContent =
-      new Date().getFullYear();
+function addTask() {
+  const title = $("taskTitle").value.trim();
+  const date = $("taskDate").value;
+  const type = $("taskType").value;
 
-  </script>
+  if (!title || !date) {
+    showToast("Please enter a title and date.");
+    return;
+  }
+
+  const tasks = readData("tasks");
+
+  tasks.push({
+    id: Date.now(),
+    title,
+    date,
+    type,
+    done: false
+  });
+
+  saveData("tasks", tasks);
+  addActivity("planner", "Added a planner item", title);
+
+  $("taskTitle").value = "";
+  $("taskDate").value = "";
+
+  renderTasks();
+  renderHome();
+  showToast("Planner item added.");
+}
+
+function renderTasks() {
+  const tasks = readData("tasks").sort((a,b) => a.date.localeCompare(b.date));
+
+  $("taskList").innerHTML = tasks.length
+    ? tasks.map(task => `
+      <div class="module-entry">
+        <div class="task-item ${task.done ? "done" : ""}">
+          <input type="checkbox" ${task.done ? "checked" : ""}
+            onchange="toggleTask(${task.id})">
+          <label>${escapeHTML(task.title)}</label>
+          <span class="task-date">${escapeHTML(task.date)}</span>
+        </div>
+        <p>${escapeHTML(task.type)}</p>
+        <br>
+        <button class="secondary-btn" onclick="deleteTask(${task.id})">Delete</button>
+      </div>
+    `).join("")
+    : emptyMessage("No planner entries yet.");
+}
+
+function toggleTask(id) {
+  const tasks = readData("tasks").map(task => {
+    if (task.id === id) task.done = !task.done;
+    return task;
+  });
+
+  saveData("tasks", tasks);
+  renderTasks();
+  renderHome();
+}
+
+function deleteTask(id) {
+  saveData("tasks", readData("tasks").filter(t => t.id !== id));
+  renderTasks();
+  renderHome();
+}
+
+function renderHomeTasks() {
+  const tasks = readData("tasks").filter(t => !t.done).sort((a,b) => a.date.localeCompare(b.date)).slice(0, 5);
+
+  $("homeTasks").innerHTML = tasks.length
+    ? tasks.map(task => `
+      <div class="task-item">
+        <input type="checkbox" onchange="toggleTask(${task.id})">
+        <label>${escapeHTML(task.title)}</label>
+        <span class="task-date">${escapeHTML(task.date)}</span>
+      </div>
+    `).join("")
+    : `<div class="empty-state">
+        <h3>No upcoming tasks</h3>
+        <p>Your pending planner items will appear here.</p>
+       </div>`;
+}
+
+
+/* COMMUNITY */
+
+function createPost() {
+  const title = $("postTitle").value.trim();
+  const content = $("postContent").value.trim();
+  const category = $("postCategory").value;
+
+  if (!title || !content) {
+    showToast("Please complete your post.");
+    return;
+  }
+
+  const posts = readData("posts");
+
+  posts.unshift({
+    id: Date.now(),
+    title,
+    content,
+    category,
+    date: new Date().toISOString()
+  });
+
+  saveData("posts", posts);
+  addActivity("community", "Created a community post", title);
+
+  $("postTitle").value = "";
+  $("postContent").value = "";
+
+  renderPosts();
+  showToast("Post created.");
+}
+
+function renderPosts() {
+  const posts = readData("posts");
+
+  $("communityPosts").innerHTML = posts.length
+    ? posts.map(post => `
+      <div class="module-entry">
+        <h3>${escapeHTML(post.title)}</h3>
+        <p>${escapeHTML(post.content)}</p>
+        <p>Category: ${escapeHTML(post.category)}</p>
+        <br>
+        <button class="secondary-btn" onclick="deletePost(${post.id})">Delete</button>
+      </div>
+    `).join("")
+    : emptyMessage("No community posts yet.");
+}
+
+function deletePost(id) {
+  saveData("posts", readData("posts").filter(p => p.id !== id));
+  renderPosts();
+}
+
+
+/* LIBRARY */
+
+function addResource() {
+  const title = $("resourceTitle").value.trim();
+  const subject = $("resourceSubject").value.trim();
+  const link = $("resourceLink").value.trim();
+
+  if (!title || !subject) {
+    showToast("Enter a resource title and subject.");
+    return;
+  }
+
+  if (link && !/^https?:\/\//i.test(link)) {
+    showToast("Please enter a valid http or https link.");
+    return;
+  }
+
+  const resources = readData("resources");
+
+  resources.unshift({
+    id: Date.now(),
+    title,
+    subject,
+    link
+  });
+
+  saveData("resources", resources);
+  addActivity("library", "Added a library resource", title);
+
+  $("resourceTitle").value = "";
+  $("resourceSubject").value = "";
+  $("resourceLink").value = "";
+
+  renderLibrary();
+  showToast("Resource saved.");
+}
+
+function renderLibrary() {
+  const resources = readData("resources");
+
+  $("libraryList").innerHTML = resources.length
+    ? resources.map(item => `
+      <div class="module-entry">
+        <h3>${escapeHTML(item.title)}</h3>
+        <p>${escapeHTML(item.subject)}</p>
+        ${item.link ? `<a href="${escapeHTML(item.link)}" target="_blank" rel="noopener noreferrer" class="text-link">Open Resource</a>` : ""}
+      </div>
+    `).join("")
+    : emptyMessage("No resources saved yet.");
+}
+
+
+/* PASSPORT */
+
+function savePassport() {
+  const passport = {
+    name: $("passportName").value.trim(),
+    education: $("passportEducation").value.trim(),
+    school: $("passportSchool").value.trim(),
+    bio: $("passportBio").value.trim(),
+    skills: $("passportSkills").value.trim()
+  };
+
+  saveData("passport", passport);
+  addActivity("passport", "Updated student passport", passport.name || "Student profile");
+  renderPassport();
+  showToast("Passport saved.");
+}
+
+function renderPassport() {
+  const data = readData("passport", null);
+  if (!data) return;
+
+  $("passportName").value = data.name || "";
+  $("passportEducation").value = data.education || "";
+  $("passportSchool").value = data.school || "";
+  $("passportBio").value = data.bio || "";
+  $("passportSkills").value = data.skills || "";
+
+  $("passportDisplay").innerHTML = `
+    <div class="module-entry">
+      <h3>${escapeHTML(data.name || "Student")}</h3>
+      <p>${escapeHTML(data.education)} · ${escapeHTML(data.school)}</p>
+      <p>${escapeHTML(data.bio)}</p>
+      <p>${escapeHTML(data.skills)}</p>
+    </div>`;
+}
+
+
+/* FLASHCARDS */
+
+function addDeck() {
+  const title = $("deckTitle").value.trim();
+  const subject = $("deckSubject").value.trim();
+
+  if (!title || !subject) {
+    showToast("Enter a deck title and subject.");
+    return;
+  }
+
+  const decks = readData("decks");
+  decks.unshift({id: Date.now(), title, subject, cards: []});
+
+  saveData("decks", decks);
+  addActivity("flashcards", "Created a flashcard deck", title);
+
+  $("deckTitle").value = "";
+  $("deckSubject").value = "";
+
+  renderDecks();
+  showToast("Deck created.");
+}
+
+function renderDecks() {
+  const decks = readData("decks");
+
+  $("decksList").innerHTML = decks.length
+    ? decks.map(deck => `
+      <div class="module-entry">
+        <h3>${escapeHTML(deck.title)}</h3>
+        <p>${escapeHTML(deck.subject)}</p>
+        <p>${deck.cards.length} cards</p>
+      </div>
+    `).join("")
+    : emptyMessage("No flashcard decks yet.");
+}
+
+
+/* STUDY PARTNERS */
+
+function saveStudyProfile() {
+  const data = {
+    level: $("studyLevel").value.trim(),
+    subjects: $("studySubjects").value.trim(),
+    language: $("studyLanguage").value.trim()
+  };
+
+  if (!data.level || !data.subjects) {
+    showToast("Please complete your study preferences.");
+    return;
+  }
+
+  saveData("studyProfile", data);
+  addActivity("partners", "Updated study preferences", data.subjects);
+  renderStudyProfile();
+  showToast("Preferences saved.");
+}
+
+function renderStudyProfile() {
+  const data = readData("studyProfile", null);
+  if (!data) return;
+
+  $("studyLevel").value = data.level || "";
+  $("studySubjects").value = data.subjects || "";
+  $("studyLanguage").value = data.language || "";
+
+  $("studyDisplay").innerHTML = `
+    <div class="module-entry">
+      <h3>My Study Preferences</h3>
+      <p>${escapeHTML(data.level)}</p>
+      <p>${escapeHTML(data.subjects)}</p>
+      <p>${escapeHTML(data.language)}</p>
+    </div>`;
+}
+
+
+/* CALCULATOR */
+
+function calcAdd(value) {
+  $("calcDisplay").value += value;
+}
+
+function calcClear() {
+  $("calcDisplay").value = "";
+}
+
+function calcResult() {
+  const expression = $("calcDisplay").value;
+
+  if (!/^[0-9+\-*/().\s]+$/.test(expression)) {
+    showToast("Invalid calculation.");
+    return;
+  }
+
+  try {
+    const result = Function('"use strict"; return (' + expression + ')')();
+
+    if (!Number.isFinite(result)) throw new Error("Invalid result");
+
+    $("calcDisplay").value = String(result);
+    addActivity("calculator", "Used student calculator", String(result));
+  } catch {
+    showToast("Unable to calculate.");
+  }
+}
+
+
+/* USER SETTINGS */
+
+function updateName() {
+  const name = $("settingsName").value.trim();
+
+  if (!name) {
+    showToast("Enter your display name.");
+    return;
+  }
+
+  localStorage.setItem("piko_name", name);
+  updateUser();
+  addActivity("passport", "Updated account profile", name);
+  showToast("Profile updated.");
+}
+
+
+/* DARK MODE */
+
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
+
+  localStorage.setItem(
+    "piko_dark",
+    document.body.classList.contains("dark") ? "on" : "off"
+  );
+}
+
+$("darkMode").addEventListener("click", toggleDarkMode);
+
+
+/* NOTIFICATIONS */
+
+function renderNotifications() {
+  $("notificationList").innerHTML =
+    `<p style="font-size:12px;color:var(--muted)">No notifications yet.</p>`;
+}
+
+
+/* SEARCH */
+
+$("globalSearch").addEventListener("keydown", event => {
+  if (event.key !== "Enter") return;
+
+  const query = event.target.value.trim().toLowerCase();
+
+  if (!query) return;
+
+  const modules = {
+    home: ["home"],
+    passport: ["passport", "achievement", "certificate"],
+    community: ["community", "post", "discussion"],
+    library: ["library", "resource", "reviewer"],
+    planner: ["planner", "task", "assignment", "calendar"],
+    notes: ["notes", "notebook"],
+    calculator: ["calculator"],
+    flashcards: ["flashcards", "review", "deck"],
+    partners: ["study partner", "study group"],
+    ai: ["ai tutor"],
+    notifications: ["notifications"],
+    settings: ["settings", "profile"]
+  };
+
+  const match = Object.entries(modules).find(([page,words]) =>
+    words.some(word => word.includes(query) || query.includes(word))
+  );
+
+  if (match) {
+    showPage(match[0]);
+    showToast("Opened " + pageNames[match[0]]);
+  } else {
+    showToast("No matching navigation item found.");
+  }
+});
+
+
+/* UTILITIES */
+
+function emptyMessage(message) {
+  return `<div class="module-entry"><p>${escapeHTML(message)}</p></div>`;
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  })[char]);
+}
+
+function timeAgo(date) {
+  const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
+
+  if (!Number.isFinite(seconds)) return "";
+
+  if (seconds < 60) return "Just now";
+  if (seconds < 3600) return Math.floor(seconds/60) + "m ago";
+  if (seconds < 86400) return Math.floor(seconds/3600) + "h ago";
+  return Math.floor(seconds/86400) + "d ago";
+}
+
+
+/* INITIALIZE */
+
+if (localStorage.getItem("piko_dark") === "on") {
+  document.body.classList.add("dark");
+}
+
+updateDate();
+updateUser();
+renderHome();
+
+</script>
 
 </body>
 </html>
