@@ -1,0 +1,1345 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#eaf7ff">
+
+  <title>PiKo — Your Space to Learn, Create, and Connect</title>
+
+  <meta name="description" content="PiKo is a free student platform where you can learn, organize your academic life, connect with other students, and grow together.">
+
+  <style>
+    /* =====================================
+       PIKO DESIGN SYSTEM
+    ===================================== */
+
+    :root {
+      --sky: #69bff0;
+      --sky-dark: #3299d0;
+      --sky-light: #eaf7ff;
+      --blue-soft: #d9f0ff;
+      --navy: #17344b;
+      --text: #38566d;
+      --muted: #7893a6;
+      --white: #ffffff;
+      --border: #e2eff7;
+      --orange: #ffb85c;
+      --shadow: 0 12px 35px rgba(57, 133, 180, 0.10);
+      --radius: 20px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      background: #ffffff;
+      color: var(--navy);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .container {
+      width: min(1160px, 90%);
+      margin: auto;
+    }
+
+    /* =====================================
+       NAVIGATION
+    ===================================== */
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-content {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 26px;
+      font-weight: 850;
+      letter-spacing: -1.5px;
+      color: var(--navy);
+    }
+
+    .brand-icon {
+      width: 39px;
+      height: 39px;
+      background: var(--sky-light);
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      font-size: 23px;
+    }
+
+    .brand span {
+      color: var(--sky-dark);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 34px;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      transition: color .2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--sky-dark);
+    }
+
+    .nav-cta {
+      background: var(--sky-dark);
+      color: white !important;
+      padding: 11px 22px;
+      border-radius: 12px;
+      transition: .2s;
+    }
+
+    .nav-cta:hover {
+      background: #237eaf;
+      transform: translateY(-2px);
+    }
+
+    .menu-btn {
+      display: none;
+      background: var(--sky-light);
+      border: none;
+      border-radius: 10px;
+      width: 43px;
+      height: 43px;
+      font-size: 23px;
+      color: var(--navy);
+    }
+
+    /* =====================================
+       BUTTONS
+    ===================================== */
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 14px 25px;
+      border-radius: 13px;
+      font-size: 14px;
+      font-weight: 750;
+      transition: .25s ease;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: var(--sky-dark);
+      color: white;
+      box-shadow: 0 7px 18px rgba(50,153,208,.20);
+    }
+
+    .btn-primary:hover {
+      background: #237eaf;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 22px rgba(50,153,208,.25);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--navy);
+      border-color: var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--sky-light);
+      border-color: var(--sky);
+    }
+
+    /* =====================================
+       HERO SECTION
+    ===================================== */
+
+    .hero {
+      background:
+        radial-gradient(circle at 85% 20%, #d3efff 0, transparent 32%),
+        linear-gradient(135deg, #f4fbff, #e8f6ff);
+      padding: 95px 0 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      align-items: center;
+      gap: 50px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border: 1px solid #d9effc;
+      color: var(--sky-dark);
+      padding: 8px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 23px;
+    }
+
+    .eyebrow-dot {
+      width: 8px;
+      height: 8px;
+      background: #4cba91;
+      border-radius: 50%;
+    }
+
+    .hero h1 {
+      font-size: clamp(42px, 5.5vw, 68px);
+      line-height: 1.08;
+      letter-spacing: -3px;
+      font-weight: 850;
+      margin-bottom: 22px;
+      color: var(--navy);
+    }
+
+    .hero h1 span {
+      color: var(--sky-dark);
+    }
+
+    .hero-description {
+      max-width: 500px;
+      color: var(--text);
+      font-size: 17px;
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 13px;
+      margin-bottom: 35px;
+    }
+
+    .hero-note {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .hero-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 420px;
+    }
+
+    .mascot-card {
+      width: 330px;
+      height: 360px;
+      background: white;
+      border: 1px solid white;
+      border-radius: 38px;
+      box-shadow: 0 25px 65px rgba(58,130,175,.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mascot-circle {
+      position: absolute;
+      width: 255px;
+      height: 255px;
+      background: var(--blue-soft);
+      border-radius: 50%;
+    }
+
+    .penguin {
+      position: relative;
+      width: 180px;
+      height: 245px;
+      animation: float 3.2s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    .penguin-body {
+      position: absolute;
+      width: 160px;
+      height: 205px;
+      left: 10px;
+      top: 25px;
+      background: #203d55;
+      border-radius: 48% 48% 44% 44%;
+      box-shadow: inset -9px -5px 0 rgba(0,0,0,.09);
+    }
+
+    .penguin-belly {
+      position: absolute;
+      width: 108px;
+      height: 145px;
+      left: 26px;
+      bottom: 5px;
+      background: white;
+      border-radius: 50% 50% 45% 45%;
+    }
+
+    .penguin-eye {
+      position: absolute;
+      top: 75px;
+      width: 12px;
+      height: 15px;
+      background: white;
+      border-radius: 50%;
+      z-index: 4;
+    }
+
+    .penguin-eye.left { left: 55px; }
+    .penguin-eye.right { right: 55px; }
+
+    .penguin-eye::after {
+      content: "";
+      width: 5px;
+      height: 7px;
+      background: #17344b;
+      border-radius: 50%;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+    }
+
+    .penguin-beak {
+      position: absolute;
+      width: 27px;
+      height: 17px;
+      top: 96px;
+      left: 77px;
+      background: var(--orange);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      z-index: 5;
+    }
+
+    .penguin-foot {
+      position: absolute;
+      width: 45px;
+      height: 19px;
+      background: #ffa947;
+      border-radius: 50%;
+      bottom: 0;
+      z-index: 5;
+    }
+
+    .penguin-foot.left { left: 36px; }
+    .penguin-foot.right { right: 36px; }
+
+    .floating-tag {
+      position: absolute;
+      z-index: 5;
+      background: white;
+      border-radius: 14px;
+      padding: 12px 17px;
+      box-shadow: var(--shadow);
+      font-size: 12px;
+      font-weight: 750;
+      color: var(--navy);
+    }
+
+    .tag-top {
+      top: 50px;
+      left: -5px;
+    }
+
+    .tag-bottom {
+      bottom: 47px;
+      right: -12px;
+    }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    /* =====================================
+       SECTION COMMON
+    ===================================== */
+
+    .section {
+      padding: 90px 0;
+    }
+
+    .section-heading {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto 48px;
+    }
+
+    .section-label {
+      color: var(--sky-dark);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 850;
+      margin-bottom: 12px;
+    }
+
+    .section-heading h2 {
+      font-size: clamp(30px,4vw,43px);
+      line-height: 1.2;
+      letter-spacing: -1.5px;
+      margin-bottom: 15px;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    /* =====================================
+       FEATURES
+    ===================================== */
+
+    .features {
+      background: white;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 19px;
+    }
+
+    .feature-card {
+      border: 1px solid var(--border);
+      padding: 27px 22px;
+      border-radius: var(--radius);
+      background: white;
+      transition: .25s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-7px);
+      border-color: #a8dcfa;
+      box-shadow: var(--shadow);
+    }
+
+    .feature-icon {
+      width: 51px;
+      height: 51px;
+      background: var(--sky-light);
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      margin-bottom: 22px;
+    }
+
+    .feature-card h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    /* =====================================
+       WHY PIKO
+    ===================================== */
+
+    .about {
+      background: #f2faff;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      align-items: center;
+      gap: 65px;
+    }
+
+    .about-visual {
+      background: linear-gradient(145deg, #d9f1ff, #bce5fa);
+      min-height: 350px;
+      border-radius: 30px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-visual .penguin {
+      transform: scale(1.05);
+    }
+
+    .about-copy h2 {
+      font-size: clamp(30px,4vw,43px);
+      letter-spacing: -1.5px;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .about-copy h2 span {
+      color: var(--sky-dark);
+    }
+
+    .about-copy > p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.9;
+      margin-bottom: 25px;
+    }
+
+    .about-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .about-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .check {
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #238c6d;
+      background: #e2f7ee;
+      font-weight: 900;
+    }
+
+    /* =====================================
+       AI COMING SOON
+    ===================================== */
+
+    .ai-section {
+      padding: 75px 0;
+      background: white;
+    }
+
+    .ai-card {
+      background: linear-gradient(110deg,#e8f6ff,#f5fbff);
+      border: 1px solid #d9effc;
+      border-radius: 28px;
+      padding: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+      overflow: hidden;
+    }
+
+    .ai-content {
+      max-width: 590px;
+    }
+
+    .coming {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 30px;
+      background: #dcefff;
+      color: #227dae;
+      font-size: 11px;
+      font-weight: 850;
+      margin-bottom: 17px;
+    }
+
+    .ai-card h2 {
+      font-size: 31px;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+
+    .ai-card p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .ai-icon {
+      font-size: 85px;
+      flex-shrink: 0;
+      padding: 10px 35px;
+    }
+
+    /* =====================================
+       CTA
+    ===================================== */
+
+    .cta {
+      background: var(--sky-dark);
+      padding: 75px 0;
+      text-align: center;
+      color: white;
+    }
+
+    .cta h2 {
+      font-size: clamp(30px,4vw,43px);
+      letter-spacing: -1px;
+      margin-bottom: 15px;
+    }
+
+    .cta p {
+      color: #e6f6ff;
+      font-size: 15px;
+      max-width: 580px;
+      margin: 0 auto 27px;
+      line-height: 1.8;
+    }
+
+    .cta .btn {
+      background: white;
+      color: var(--sky-dark);
+    }
+
+    .cta .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0,0,0,.12);
+    }
+
+    /* =====================================
+       FOOTER
+    ===================================== */
+
+    footer {
+      background: #17344b;
+      color: white;
+      padding: 52px 0 22px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr 1fr;
+      gap: 45px;
+      padding-bottom: 38px;
+    }
+
+    .footer-brand {
+      font-size: 25px;
+      font-weight: 850;
+      margin-bottom: 13px;
+    }
+
+    .footer-brand span {
+      color: #76c9f5;
+    }
+
+    .footer-description {
+      max-width: 330px;
+      color: #b9d1e0;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .footer-column h4 {
+      margin-bottom: 15px;
+      font-size: 13px;
+    }
+
+    .footer-column a {
+      display: block;
+      color: #b9d1e0;
+      font-size: 13px;
+      margin-bottom: 11px;
+    }
+
+    .footer-column a:hover {
+      color: white;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.13);
+      padding-top: 20px;
+      color: #a9c3d4;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* =====================================
+       RESPONSIVE DESIGN
+    ===================================== */
+
+    @media(max-width: 900px) {
+      .feature-grid {
+        grid-template-columns: repeat(2,1fr);
+      }
+
+      .hero-grid,
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual {
+        min-height: 380px;
+      }
+
+      .about-visual {
+        min-height: 320px;
+      }
+
+      .hero-copy {
+        text-align: center;
+      }
+
+      .hero-description {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+      }
+    }
+
+    @media(max-width: 700px) {
+      .menu-btn {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 76px;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 20px 5%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        border-bottom: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .nav-links a {
+        padding: 14px 5px;
+      }
+
+      .nav-cta {
+        text-align: center;
+        margin-top: 8px;
+      }
+
+      .hero {
+        padding: 65px 0;
+      }
+
+      .hero h1 {
+        letter-spacing: -2px;
+      }
+
+      .hero-description {
+        font-size: 15px;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        padding: 70px 0;
+      }
+
+      .ai-card {
+        padding: 30px 23px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .ai-icon {
+        align-self: center;
+        padding: 0;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+
+      .footer-brand-column {
+        grid-column: 1 / -1;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+      }
+    }
+
+    @media(max-width: 400px) {
+      .mascot-card {
+        width: 270px;
+        height: 320px;
+      }
+
+      .floating-tag {
+        font-size: 10px;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+      }
+
+      .hero-buttons .btn {
+        width: 100%;
+      }
+    }
+
+    @media(prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- =================================
+       NAVIGATION
+  ================================== -->
+
+  <header class="navbar">
+    <div class="container nav-content">
+
+      <a href="#home" class="brand">
+        <div class="brand-icon">🐧</div>
+        Pi<span>Ko</span>
+      </a>
+
+      <button
+        class="menu-btn"
+        id="menuBtn"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="navLinks"
+      >
+        ☰
+      </button>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#home">Home</a>
+        <a href="#features">Features</a>
+        <a href="#about">About PiKo</a>
+        <a href="#ai">PiKo AI</a>
+        <a href="#get-started" class="nav-cta">Explore PiKo →</a>
+      </nav>
+
+    </div>
+  </header>
+
+
+  <main>
+
+    <!-- =================================
+         HERO SECTION
+    ================================== -->
+
+    <section class="hero" id="home">
+
+      <div class="container hero-grid">
+
+        <div class="hero-copy">
+
+          <div class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            A PLATFORM MADE FOR STUDENTS
+          </div>
+
+          <h1>
+            Your space to
+            <span>learn, create,</span>
+            and connect.
+          </h1>
+
+          <p class="hero-description">
+            Meet PiKo — your digital student companion.
+            Discover learning resources, organize your academic
+            life, and connect with students from different places.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="#features" class="btn btn-primary">
+              Explore Features →
+            </a>
+
+            <a href="#about" class="btn btn-secondary">
+              Discover PiKo
+            </a>
+          </div>
+
+          <div class="hero-note">
+            ✦ Free to use · Designed for every student
+          </div>
+
+        </div>
+
+
+        <div class="hero-visual">
+
+          <div class="floating-tag tag-top">
+            📚 Learn something new
+          </div>
+
+          <div class="mascot-card">
+
+            <div class="mascot-circle"></div>
+
+            <div class="penguin">
+
+              <div class="penguin-body">
+                <div class="penguin-belly"></div>
+              </div>
+
+              <div class="penguin-eye left"></div>
+              <div class="penguin-eye right"></div>
+              <div class="penguin-beak"></div>
+
+              <div class="penguin-foot left"></div>
+              <div class="penguin-foot right"></div>
+
+            </div>
+
+          </div>
+
+          <div class="floating-tag tag-bottom">
+            💙 Grow at your own pace
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================
+         FEATURES
+    ================================== -->
+
+    <section class="section features" id="features">
+
+      <div class="container">
+
+        <div class="section-heading">
+
+          <div class="section-label">
+            WHAT PIKO OFFERS
+          </div>
+
+          <h2>
+            Everything students need,
+            <span style="color:#3299d0;">in one place.</span>
+          </h2>
+
+          <p>
+            Explore tools that make learning, organizing,
+            and connecting with other students easier.
+          </p>
+
+        </div>
+
+
+        <div class="feature-grid">
+
+          <article class="feature-card">
+            <div class="feature-icon">🪪</div>
+            <h3>Student Passport</h3>
+            <p>
+              Keep your achievements, certificates,
+              skills, and experiences in one digital portfolio.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">👥</div>
+            <h3>Student Community</h3>
+            <p>
+              Share ideas, ask academic questions,
+              join discussions, and connect with students.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">📚</div>
+            <h3>Digital Library</h3>
+            <p>
+              Discover reviewers, notes, PDFs,
+              and useful educational materials.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">📅</div>
+            <h3>Student Planner</h3>
+            <p>
+              Organize class schedules, assignments,
+              deadlines, examinations, and reminders.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">📝</div>
+            <h3>Personal Notes</h3>
+            <p>
+              Create, edit, save, and organize
+              your personal digital notes.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">🧮</div>
+            <h3>Student Calculator</h3>
+            <p>
+              Use helpful calculators for
+              common academic computations.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">🗂️</div>
+            <h3>Flashcards and Review</h3>
+            <p>
+              Create flashcards, practice questions,
+              and review your lessons.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">🤝</div>
+            <h3>Study Partner Finder</h3>
+            <p>
+              Discover study buddies and groups
+              with similar subjects and interests.
+            </p>
+          </article>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================
+         ABOUT PIKO
+    ================================== -->
+
+    <section class="section about" id="about">
+
+      <div class="container about-grid">
+
+        <div class="about-visual">
+
+          <div class="penguin">
+
+            <div class="penguin-body">
+              <div class="penguin-belly"></div>
+            </div>
+
+            <div class="penguin-eye left"></div>
+            <div class="penguin-eye right"></div>
+            <div class="penguin-beak"></div>
+
+            <div class="penguin-foot left"></div>
+            <div class="penguin-foot right"></div>
+
+          </div>
+
+        </div>
+
+
+        <div class="about-copy">
+
+          <div class="section-label">
+            GET TO KNOW PIKO
+          </div>
+
+          <h2>
+            More than a platform.
+            <span>A student companion.</span>
+          </h2>
+
+          <p>
+            PiKo is designed to bring useful student tools
+            together in one accessible digital space.
+
+            Whether you want to organize your academic tasks,
+            discover learning materials, or connect with others,
+            PiKo is here to make your student experience better.
+          </p>
+
+          <div class="about-list">
+
+            <div class="about-item">
+              <span class="check">✓</span>
+              Designed for JHS, SHS, and College students
+            </div>
+
+            <div class="about-item">
+              <span class="check">✓</span>
+              Simple and user-friendly experience
+            </div>
+
+            <div class="about-item">
+              <span class="check">✓</span>
+              Accessible through a responsive website
+            </div>
+
+            <div class="about-item">
+              <span class="check">✓</span>
+              Free core student features
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================
+         AI COMING SOON
+    ================================== -->
+
+    <section class="ai-section" id="ai">
+
+      <div class="container">
+
+        <div class="ai-card">
+
+          <div class="ai-content">
+
+            <div class="coming">
+              ✨ COMING SOON
+            </div>
+
+            <h2>Meet PiKo AI.</h2>
+
+            <p>
+              Your future learning companion.
+              Get help understanding difficult lessons,
+              exploring new topics, and practicing
+              your knowledge with an AI-powered assistant.
+            </p>
+
+            <br>
+
+            <span class="hero-note">
+              PiKo AI is currently under development.
+            </span>
+
+          </div>
+
+          <div class="ai-icon">🐧💡</div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================
+         FINAL CTA
+    ================================== -->
+
+    <section class="cta" id="get-started">
+
+      <div class="container">
+
+        <h2>Ready to explore PiKo?</h2>
+
+        <p>
+          Discover a better way to organize your
+          student life, explore resources, and
+          connect with your learning community.
+        </p>
+
+        <a href="#features" class="btn">
+          Discover PiKo Features →
+        </a>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =================================
+       FOOTER
+  ================================== -->
+
+  <footer>
+
+    <div class="container">
+
+      <div class="footer-grid">
+
+        <div class="footer-brand-column">
+
+          <div class="footer-brand">
+            🐧 Pi<span>Ko</span>
+          </div>
+
+          <p class="footer-description">
+            Your space to learn, create, and connect.
+            A digital student platform designed
+            to bring students and useful tools together.
+          </p>
+
+        </div>
+
+
+        <div class="footer-column">
+
+          <h4>Explore</h4>
+
+          <a href="#home">Home</a>
+          <a href="#features">Features</a>
+          <a href="#about">About PiKo</a>
+          <a href="#ai">PiKo AI</a>
+
+        </div>
+
+
+        <div class="footer-column">
+
+          <h4>Platform</h4>
+
+          <a href="#features">Student Tools</a>
+          <a href="#features">Digital Library</a>
+          <a href="#features">Student Community</a>
+          <a href="#get-started">Get Started</a>
+
+        </div>
+
+      </div>
+
+
+      <div class="footer-bottom">
+
+        <p>
+          © <span id="year"></span> PiKo. All rights reserved.
+        </p>
+
+        <p>
+          Made for students, with 💙
+        </p>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <!-- =================================
+       JAVASCRIPT
+  ================================== -->
+
+  <script>
+
+    // Mobile navigation toggle
+
+    const menuBtn = document.getElementById("menuBtn");
+    const navLinks = document.getElementById("navLinks");
+
+    menuBtn.addEventListener("click", () => {
+
+      const isOpen = navLinks.classList.toggle("active");
+
+      menuBtn.setAttribute("aria-expanded", isOpen);
+      menuBtn.textContent = isOpen ? "✕" : "☰";
+
+    });
+
+
+    // Close mobile menu after clicking a link
+
+    document.querySelectorAll(".nav-links a").forEach(link => {
+
+      link.addEventListener("click", () => {
+
+        navLinks.classList.remove("active");
+
+        menuBtn.setAttribute("aria-expanded", "false");
+        menuBtn.textContent = "☰";
+
+      });
+
+    });
+
+
+    // Automatic copyright year
+
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+
+  </script>
+
+</body>
+</html>
