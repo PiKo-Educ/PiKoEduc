@@ -1,2045 +1,1436 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#edf8ff">
-<title>PiKo | Student Platform</title>
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-:root {
-  --primary: #55ace0;
-  --primary-dark: #328fc5;
-  --primary-light: #e5f5ff;
-  --background: #f5faff;
-  --surface: #ffffff;
-  --text: #19364c;
-  --muted: #8195a6;
-  --border: #e7f0f7;
-  --sidebar-width: 250px;
-  --shadow: 0 5px 22px rgba(45, 114, 157, .07);
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--background);
-  color: var(--text);
-  min-height: 100vh;
-}
-
-button, input, textarea, select {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-/* IMAGE PLACEHOLDERS */
-
-.image-icon {
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-  display: none;
-}
-
-.image-icon.loaded {
-  display: block;
-}
-
-.icon-box {
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--primary-light);
-  border-radius: 12px;
-  flex-shrink: 0;
-}
-
-.icon-box.small {
-  width: 34px;
-  height: 34px;
-}
-
-.icon-box img {
-  max-width: 24px;
-  max-height: 24px;
-  object-fit: contain;
-  display: none;
-}
-
-.icon-box img.loaded {
-  display: block;
-}
-
-/* SIDEBAR */
-
-.sidebar {
-  width: var(--sidebar-width);
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: white;
-  border-right: 1px solid var(--border);
-  padding: 24px 16px;
-  display: flex;
-  flex-direction: column;
-  z-index: 100;
-  transition: transform .3s ease;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 4px 10px 30px;
-}
-
-.brand img {
-  width: 44px;
-  height: 44px;
-  object-fit: contain;
-}
-
-.brand-name {
-  font-size: 27px;
-  font-weight: 800;
-  letter-spacing: -1.5px;
-}
-
-.brand-name span {
-  color: var(--primary-dark);
-}
-
-.menu-label {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1.2px;
-  color: #a1b1be;
-  padding: 15px 12px 9px;
-}
-
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.nav-link {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  width: 100%;
-  padding: 11px 12px;
-  border-radius: 11px;
-  color: #71879a;
-  font-size: 13px;
-  font-weight: 600;
-  background: transparent;
-  border: none;
-  text-align: left;
-  transition: .2s;
-}
-
-.nav-link:hover {
-  background: #f1f8fd;
-  color: var(--primary-dark);
-}
-
-.nav-link.active {
-  background: var(--primary-light);
-  color: var(--primary-dark);
-}
-
-.nav-link .image-icon {
-  width: 20px;
-  height: 20px;
-}
-
-.soon-label {
-  margin-left: auto;
-  font-size: 9px;
-  background: #f1eaff;
-  color: #9164c3;
-  padding: 4px 7px;
-  border-radius: 6px;
-  font-weight: 800;
-}
-
-.sidebar-bottom {
-  border-top: 1px solid var(--border);
-  padding-top: 14px;
-}
-
-.user-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 8px;
-  border-radius: 12px;
-}
-
-.avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: #dff2ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #328fc5;
-  font-size: 13px;
-  font-weight: 800;
-  overflow: hidden;
-}
-
-.avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.user-info {
-  min-width: 0;
-  flex: 1;
-}
-
-.user-info strong {
-  display: block;
-  font-size: 12px;
-}
-
-.user-info small {
-  font-size: 10px;
-  color: var(--muted);
-}
-
-/* MAIN CONTENT */
-
-.main {
-  margin-left: var(--sidebar-width);
-  min-height: 100vh;
-}
-
-.topbar {
-  height: 74px;
-  background: rgba(255,255,255,.93);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 34px;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  backdrop-filter: blur(12px);
-}
-
-.topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.page-title {
-  font-size: 16px;
-  font-weight: 750;
-}
-
-.search-box {
-  width: 280px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  background: #f4f9fd;
-  padding: 10px 13px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-}
-
-.search-box input {
-  width: 100%;
-  border: 0;
-  outline: none;
-  background: transparent;
-  font-size: 12px;
-  color: var(--text);
-}
-
-.search-box img {
-  width: 17px;
-  height: 17px;
-}
-
-.topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.icon-button {
-  width: 39px;
-  height: 39px;
-  border: 1px solid var(--border);
-  border-radius: 11px;
-  display: grid;
-  place-items: center;
-  background: white;
-  position: relative;
-}
-
-.icon-button img {
-  width: 19px;
-  height: 19px;
-  object-fit: contain;
-}
-
-.mobile-menu {
-  display: none;
-}
-
-/* CONTENT */
-
-.content {
-  max-width: 1450px;
-  margin: auto;
-  padding: 32px 34px 50px;
-}
-
-.welcome {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 29px;
-}
-
-.welcome h1 {
-  font-size: 25px;
-  letter-spacing: -.8px;
-  margin-bottom: 7px;
-}
-
-.welcome p {
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.welcome-image {
-  width: 105px;
-  height: 105px;
-  object-fit: contain;
-}
-
-/* DASHBOARD CARDS */
-
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: 1.55fr .85fr;
-  gap: 20px;
-  align-items: start;
-}
-
-.card {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 21px;
-  box-shadow: var(--shadow);
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.card-header h2 {
-  font-size: 14px;
-  font-weight: 750;
-}
-
-.card-header small {
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.text-link {
-  color: var(--primary-dark);
-  font-size: 11px;
-  font-weight: 700;
-  background: transparent;
-  border: none;
-}
-
-.recent-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.activity-item {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 13px 0;
-  border-bottom: 1px solid #f0f5f8;
-}
-
-.activity-item:last-child {
-  border-bottom: none;
-}
-
-.activity-icon {
-  width: 40px;
-  height: 40px;
-  background: #edf7fe;
-  border-radius: 11px;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-}
-
-.activity-icon img {
-  width: 21px;
-  height: 21px;
-  object-fit: contain;
-}
-
-.activity-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.activity-info strong {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.activity-info p {
-  font-size: 10px;
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-.activity-time {
-  font-size: 10px;
-  color: #9aabb9;
-  white-space: nowrap;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 35px 10px;
-}
-
-.empty-state img {
-  width: 75px;
-  height: 75px;
-  object-fit: contain;
-  margin: 0 auto 14px;
-}
-
-.empty-state h3 {
-  font-size: 13px;
-  margin-bottom: 5px;
-}
-
-.empty-state p {
-  color: var(--muted);
-  font-size: 11px;
-}
-
-/* RECENT NOTES */
-
-.note-item {
-  padding: 13px 0;
-  border-bottom: 1px solid #f0f5f8;
-}
-
-.note-item:last-child {
-  border-bottom: none;
-}
-
-.note-item strong {
-  font-size: 12px;
-}
-
-.note-item p {
-  font-size: 10px;
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-/* TASKS */
-
-.task-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 0;
-  border-bottom: 1px solid #f0f5f8;
-}
-
-.task-item:last-child {
-  border-bottom: none;
-}
-
-.task-item input {
-  accent-color: var(--primary-dark);
-}
-
-.task-item label {
-  font-size: 11px;
-  flex: 1;
-}
-
-.task-item.done label {
-  text-decoration: line-through;
-  color: #9baab5;
-}
-
-.task-date {
-  font-size: 10px;
-  color: var(--muted);
-}
-
-/* SHORTCUTS */
-
-.shortcuts {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-top: 20px;
-}
-
-.shortcut {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 17px 12px;
-  text-align: center;
-  transition: .2s;
-}
-
-.shortcut:hover {
-  transform: translateY(-3px);
-  border-color: #a8dafa;
-  box-shadow: var(--shadow);
-}
-
-.shortcut img {
-  width: 27px;
-  height: 27px;
-  object-fit: contain;
-  margin: 0 auto 9px;
-}
-
-.shortcut strong {
-  display: block;
-  font-size: 10px;
-}
-
-/* MODULE PAGES */
-
-.page-section {
-  display: none;
-}
-
-.page-section.active {
-  display: block;
-}
-
-.module-heading {
-  margin-bottom: 23px;
-}
-
-.module-heading h1 {
-  font-size: 23px;
-  margin-bottom: 5px;
-}
-
-.module-heading p {
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.form-control {
-  width: 100%;
-  padding: 12px 13px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  outline: none;
-  margin-bottom: 12px;
-  background: white;
-  color: var(--text);
-  font-size: 12px;
-}
-
-.form-control:focus {
-  border-color: var(--primary);
-}
-
-textarea.form-control {
-  min-height: 110px;
-  resize: vertical;
-}
-
-.primary-btn {
-  background: var(--primary-dark);
-  color: white;
-  border: none;
-  padding: 11px 18px;
-  border-radius: 9px;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.secondary-btn {
-  background: var(--primary-light);
-  color: var(--primary-dark);
-  border: none;
-  padding: 10px 15px;
-  border-radius: 9px;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.module-list {
-  margin-top: 18px;
-}
-
-.module-entry {
-  background: white;
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  margin-bottom: 10px;
-}
-
-.module-entry h3 {
-  font-size: 13px;
-  margin-bottom: 5px;
-}
-
-.module-entry p {
-  font-size: 11px;
-  color: var(--muted);
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.coming-card {
-  max-width: 620px;
-  margin: 40px auto;
-  text-align: center;
-  padding: 45px 25px;
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-}
-
-.coming-card img {
-  width: 125px;
-  height: 125px;
-  object-fit: contain;
-  margin-bottom: 20px;
-}
-
-.coming-card h2 {
-  margin-bottom: 10px;
-  font-size: 21px;
-}
-
-.coming-card p {
-  max-width: 410px;
-  margin: auto;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.8;
-}
-
-/* TOAST */
-
-.toast {
-  position: fixed;
-  bottom: 25px;
-  right: 25px;
-  background: #193b54;
-  color: white;
-  padding: 13px 19px;
-  font-size: 12px;
-  border-radius: 10px;
-  opacity: 0;
-  transform: translateY(15px);
-  pointer-events: none;
-  transition: .25s;
-  z-index: 500;
-}
-
-.toast.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* DARK MODE */
-
-body.dark {
-  --background: #142637;
-  --surface: #1e3447;
-  --text: #e3f1fa;
-  --muted: #9bb3c5;
-  --border: #30495d;
-  --primary-light: #27485f;
-  background: var(--background);
-  color: var(--text);
-}
-
-body.dark .sidebar,
-body.dark .topbar,
-body.dark .card,
-body.dark .shortcut,
-body.dark .module-entry,
-body.dark .coming-card,
-body.dark .icon-button {
-  background: #1e3447;
-  border-color: var(--border);
-  color: var(--text);
-}
-
-body.dark .search-box,
-body.dark .activity-icon,
-body.dark .icon-box {
-  background: #27485f;
-}
-
-body.dark .nav-link {
-  color: #b6cbd9;
-}
-
-body.dark .nav-link.active,
-body.dark .nav-link:hover {
-  background: #27485f;
-  color: #82d0ff;
-}
-
-body.dark .form-control {
-  background: #142637;
-  color: white;
-  border-color: var(--border);
-}
-
-/* RESPONSIVE */
-
-@media(max-width: 1050px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#edf4ff" />
+  <meta name="description" content="PiKo — your all-in-one student companion." />
+  <title>PiKo | Student Companion</title>
+  <!-- Optional custom images: upload them to assets/images/ in your GitHub repository. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue: #2563eb;
+      --blue-dark: #143b91;
+      --blue-soft: #e8f1ff;
+      --blue-pale: #f3f7ff;
+      --orange: #ff9e32;
+      --ink: #142447;
+      --muted: #71809f;
+      --line: #e5ecfa;
+      --surface: rgba(255,255,255,.92);
+      --shadow: 0 10px 30px rgba(48, 91, 169, .09);
+      --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #e9f2ff 0%, #f7f9ff 48%, #eef4ff 100%);
+      color: var(--ink);
+      font-family: 'Nunito', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: 3px solid rgba(37,99,235,.22);
+      outline-offset: 2px;
+    }
+    .app-shell { min-height: 100vh; }
+    .sidebar {
+      width: 236px;
+      position: fixed;
+      inset: 18px auto 18px 18px;
+      z-index: 20;
+      padding: 23px 16px 18px;
+      border: 1px solid rgba(255,255,255,.9);
+      border-radius: 28px;
+      background: rgba(255,255,255,.84);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(16px);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 3px 8px 30px; }
+    .brand-mark {
+      width: 48px; height: 48px; border-radius: 17px;
+      background: linear-gradient(145deg, #e8f2ff, #d6e7ff);
+      display: grid; place-items: center; font-size: 29px;
+      box-shadow: inset 0 0 0 1px #d7e5ff;
+    }
+    .brand-name { color: var(--blue); font-weight: 900; font-size: 29px; letter-spacing: -.8px; line-height: 1; }
+    .brand-tag { color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: 1.3px; margin-top: 4px; }
+    .nav-label { padding: 0 12px 11px; color: #9aa7bf; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.6px; }
+    .nav-list { display: grid; gap: 8px; }
+    .nav-btn {
+      border: 0; width: 100%; display: flex; align-items: center; gap: 13px;
+      min-height: 52px; padding: 0 14px; border-radius: 16px;
+      background: transparent; color: #465778; text-align: left;
+      font-weight: 800; font-size: 14px; transition: .2s ease;
+    }
+    .nav-btn:hover { background: #f1f6ff; color: var(--blue); transform: translateX(2px); }
+    .nav-btn.active { color: white; background: linear-gradient(110deg, #3e84f5, #2563eb); box-shadow: 0 9px 18px rgba(37,99,235,.2); }
+    .sidebar-bottom { margin-top: auto; }
+    .mascot-card {
+      position: relative; overflow: hidden; border-radius: 21px; padding: 16px 13px 14px;
+      background: linear-gradient(145deg, #e9f3ff, #dceaff); text-align: center;
+      border: 1px solid #dbe8ff;
+    }
+    .mascot-card .mascot { font-size: 55px; line-height: 1.1; }
+    .mascot-card strong { display: block; font-size: 13px; margin-top: 5px; }
+    .mascot-card span { color: var(--muted); font-size: 11px; }
+    .sidebar-foot { color: #9aa7bf; font-size: 10px; text-align: center; padding-top: 15px; font-weight: 700; }
+
+    .main-area { margin-left: 272px; padding: 18px 24px 32px 8px; max-width: 1720px; }
+    .topbar {
+      min-height: 68px; display: flex; align-items: center; gap: 18px; margin-bottom: 18px;
+    }
+    .mobile-brand { display: none; }
+    .search-wrap { position: relative; flex: 1; max-width: 570px; }
+    .search-wrap input {
+      width: 100%; height: 49px; border: 1px solid #dce7fb; border-radius: 18px;
+      background: rgba(255,255,255,.85); padding: 0 18px 0 48px; color: var(--ink); box-shadow: 0 5px 16px rgba(48,91,169,.04);
+    }
+    .search-wrap input::placeholder { color: #91a1c2; }
+    .topbar-spacer { flex: 1; }
+    .icon-button { position: relative; width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid #e2eaf8; border-radius: 15px; background: white; color: #42577f; }
+    .notification-dot { position: absolute; top: 7px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: #ff6464; border: 1px solid white; }
+    .profile-button { display: flex; align-items: center; gap: 9px; padding: 4px 9px 4px 4px; border: 1px solid #e2eaf8; border-radius: 16px; background: white; color: var(--ink); font-weight: 800; }
+    .avatar { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 13px; background: #e8efff; font-size: 20px; }
+
+    .page { display: none; animation: appear .24s ease; }
+    .page.active { display: block; }
+    @keyframes appear { from { opacity: .4; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin: 4px 0 21px; }
+    .eyebrow { color: var(--blue); text-transform: uppercase; letter-spacing: 1.4px; font-size: 10px; font-weight: 900; }
+    h1 { font-size: clamp(25px, 3vw, 33px); line-height: 1.15; margin: 4px 0 5px; letter-spacing: -.8px; font-weight: 900; }
+    .subtitle { color: var(--muted); margin: 0; font-size: 14px; font-weight: 600; }
+    .primary-btn, .secondary-btn, .small-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      border: 0; border-radius: 14px; padding: 11px 16px; font-weight: 900; font-size: 13px; transition: .2s ease;
+    }
+    .primary-btn { color: white; background: var(--blue); box-shadow: 0 7px 15px rgba(37,99,235,.18); }
+    .primary-btn:hover { background: #174fc8; transform: translateY(-1px); }
+    .secondary-btn { color: var(--blue); background: #edf4ff; border: 1px solid #dce9ff; }
+    .secondary-btn:hover { background: #e2edff; }
+    .small-btn { padding: 7px 11px; border-radius: 10px; color: var(--blue); background: #edf4ff; font-size: 11px; }
+    .card { background: var(--surface); border: 1px solid rgba(255,255,255,.95); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .hero {
+      min-height: 258px; position: relative; overflow: hidden; display: flex; align-items: center;
+      padding: 33px 38px; margin-bottom: 22px;
+      background: linear-gradient(110deg, #d4e8ff 0%, #a8d1ff 56%, #d7e9ff 100%);
+      border: 1px solid #d6e7ff; border-radius: 25px;
+    }
+    .hero:before, .hero:after { content: ''; position: absolute; border-radius: 50%; background: rgba(255,255,255,.24); }
+    .hero:before { width: 230px; height: 230px; right: 215px; top: -130px; }
+    .hero:after { width: 330px; height: 330px; right: -70px; bottom: -250px; }
+    .hero-copy { position: relative; z-index: 2; max-width: 58%; }
+    .hero-copy h2 { font-size: clamp(29px, 4vw, 46px); line-height: 1.05; letter-spacing: -1.5px; margin: 0 0 12px; font-weight: 900; color: #102750; }
+    .hero-copy h2 span { color: var(--blue); }
+    .hero-copy p { font-size: 16px; color: #234d9f; font-weight: 800; margin: 0 0 20px; }
+    .hero-mascot { position: absolute; z-index: 1; right: 45px; bottom: -15px; font-size: clamp(145px, 19vw, 220px); line-height: 1; filter: drop-shadow(0 11px 8px rgba(35,83,151,.13)); transform: rotate(-3deg); }
+    .sparkle { position: absolute; right: 235px; top: 25px; color: #ffb13e; font-size: 38px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 21px; }
+    .stat-card { min-height: 109px; padding: 18px 19px; display: flex; align-items: center; gap: 14px; }
+    .stat-icon { width: 51px; height: 51px; flex: 0 0 51px; border-radius: 17px; display: grid; place-items: center; font-size: 24px; }
+    .stat-icon.blue { background: #e6f0ff; }
+    .stat-icon.green { background: #e4f8f1; }
+    .stat-icon.orange { background: #fff1dd; }
+    .stat-label { color: #687b9f; font-size: 12px; font-weight: 800; }
+    .stat-value { font-size: 20px; font-weight: 900; margin-top: 2px; }
+    .stat-note { color: var(--muted); font-size: 11px; font-weight: 700; }
+    .dashboard-grid { display: grid; grid-template-columns: 1.05fr 1.45fr; gap: 15px; }
+    .section-card { padding: 20px; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .section-head h3 { margin: 0; font-size: 18px; font-weight: 900; }
+    .link-btn { padding: 0; border: 0; background: none; color: var(--blue); font-weight: 900; font-size: 12px; }
+    .quick-tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .tool-tile { min-height: 116px; border: 0; border-radius: 17px; padding: 13px 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 9px; color: var(--ink); font-weight: 900; font-size: 12px; transition: .2s; }
+    .tool-tile:hover { transform: translateY(-3px); }
+    .tool-tile .tool-emoji { font-size: 29px; }
+    .tool-tile.purple { background: #f0eaff; }
+    .tool-tile.blue { background: #e5f0ff; }
+    .tool-tile.orange { background: #fff0dc; }
+    .activity-list { display: grid; }
+    .activity-row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid #edf1f8; }
+    .activity-row:first-child { border-top: 0; padding-top: 0; }
+    .activity-emoji { width: 36px; height: 36px; flex: 0 0 36px; display: grid; place-items: center; border-radius: 13px; background: #edf4ff; font-size: 17px; }
+    .activity-text { flex: 1; font-size: 12px; font-weight: 800; }
+    .activity-time { color: #8c9aba; font-size: 11px; white-space: nowrap; }
+    .motivation {
+      margin-top: 16px; min-height: 112px; padding: 18px 24px; border-radius: 22px;
+      background: linear-gradient(105deg, #e1efff, #d5e7ff); border: 1px solid #d6e6ff;
+      display: flex; justify-content: space-between; align-items: center; overflow: hidden;
+    }
+    .motivation strong { display: block; color: #1749b2; font-size: clamp(17px, 2.5vw, 24px); font-weight: 900; font-style: italic; }
+    .motivation span { display: block; margin-top: 4px; color: #49699e; font-size: 12px; font-weight: 800; }
+    .motivation .mascot { font-size: 75px; line-height: 1; margin: -8px 20px -20px 0; }
+
+    /* Schedule */
+    .schedule-layout { display: grid; grid-template-columns: 1.35fr .8fr; gap: 16px; }
+    .calendar-card, .task-card { padding: 21px; }
+    .calendar-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .calendar-top strong { font-size: 18px; font-weight: 900; }
+    .month-controls { display: flex; gap: 7px; }
+    .month-controls button { width: 32px; height: 32px; border: 1px solid var(--line); border-radius: 10px; background: white; color: var(--blue); font-weight: 900; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
+    .weekday { color: #91a0bb; font-size: 10px; font-weight: 900; padding: 7px 0; }
+    .date-cell { min-height: 43px; border: 0; border-radius: 12px; background: transparent; color: #425578; font-weight: 800; font-size: 12px; position: relative; }
+    .date-cell:hover { background: #edf4ff; }
+    .date-cell.muted { color: #c0c9d9; }
+    .date-cell.today { background: var(--blue); color: white; box-shadow: 0 5px 12px rgba(37,99,235,.2); }
+    .date-cell.has-event:after { content: ''; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--orange); }
+    .date-cell.today.has-event:after { background: white; }
+    .task-list { display: grid; gap: 10px; }
+    .task-item { padding: 12px; border: 1px solid #edf1f8; border-radius: 15px; display: flex; align-items: flex-start; gap: 10px; }
+    .task-item input { margin-top: 4px; accent-color: var(--blue); }
+    .task-info { flex: 1; min-width: 0; }
+    .task-info strong { display: block; font-size: 12px; font-weight: 900; }
+    .task-info span { color: var(--muted); font-size: 10px; font-weight: 700; }
+    .task-item.done .task-info strong { text-decoration: line-through; color: #9aa7bf; }
+    .empty-state { padding: 25px 12px; text-align: center; color: var(--muted); font-size: 13px; font-weight: 700; }
+    .inline-form { display: flex; gap: 8px; margin-top: 15px; }
+    .field { width: 100%; min-width: 0; padding: 11px 13px; border: 1px solid #dfe8f7; border-radius: 12px; background: #fbfdff; color: var(--ink); }
+    .field::placeholder { color: #9aa8c1; }
+
+    /* Study table */
+    .study-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 17px; }
+    .tab-btn { border: 1px solid #dfe8f7; background: rgba(255,255,255,.8); color: #687b9f; border-radius: 12px; padding: 9px 15px; font-size: 12px; font-weight: 900; }
+    .tab-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
+    .study-panel { display: none; }
+    .study-panel.active { display: block; }
+    .study-intro { padding: 22px; margin-bottom: 15px; background: linear-gradient(110deg, #e6f1ff, #f5f8ff); border: 1px solid #dbe8ff; border-radius: 19px; }
+    .study-intro h2 { margin: 0 0 5px; font-size: 20px; font-weight: 900; }
+    .study-intro p { margin: 0; color: var(--muted); font-size: 12px; font-weight: 700; }
+    .flashcard-area { display: grid; grid-template-columns: 1fr 310px; gap: 15px; }
+    .flashcard-view { min-height: 260px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 25px; text-align: center; cursor: pointer; background: linear-gradient(140deg, #fff, #f1f6ff); border: 1px solid #e0eaff; }
+    .flashcard-view .card-kicker { color: var(--blue); font-size: 10px; font-weight: 900; letter-spacing: 1.3px; text-transform: uppercase; }
+    .flashcard-view strong { font-size: clamp(20px, 3vw, 28px); font-weight: 900; margin: 15px 0; }
+    .flashcard-view span { color: var(--muted); font-size: 11px; font-weight: 700; }
+    .flashcard-controls { display: flex; justify-content: center; gap: 9px; margin-top: 12px; }
+    .form-card { padding: 19px; }
+    .form-card h3 { margin: 0 0 13px; font-size: 15px; }
+    .form-stack { display: grid; gap: 9px; }
+    textarea.field { min-height: 78px; resize: vertical; }
+    .saved-list { display: grid; gap: 8px; margin-top: 12px; }
+    .saved-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 9px 10px; background: #f5f8ff; border-radius: 11px; font-size: 11px; font-weight: 800; }
+    .calculator { max-width: 370px; padding: 18px; }
+    .calc-display { width: 100%; padding: 17px 14px; margin-bottom: 12px; border: 1px solid #e2eaf8; border-radius: 14px; background: #f6f9ff; text-align: right; font-size: 28px; font-weight: 900; min-height: 65px; overflow-x: auto; }
+    .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .calc-key { border: 0; border-radius: 13px; min-height: 48px; background: #edf3ff; color: #294b8b; font-size: 16px; font-weight: 900; }
+    .calc-key:hover { background: #dfeaff; }
+    .calc-key.operator { background: #fff0dc; color: #b46a0e; }
+    .calc-key.equal { background: var(--blue); color: white; }
+    .calc-key.clear { background: #ffe9e9; color: #d24d4d; }
+    .notes-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .note-card { padding: 17px; }
+    .note-card h3 { margin: 0 0 12px; font-size: 15px; }
+    .note-entry { padding: 12px; border: 1px solid #edf1f8; border-radius: 13px; margin-bottom: 8px; }
+    .note-entry strong { font-size: 13px; }
+    .note-entry p { white-space: pre-wrap; margin: 5px 0 8px; color: var(--muted); font-size: 11px; }
+
+    /* Partners and tutor */
+    .partner-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .partner-card { padding: 20px; text-align: center; }
+    .partner-avatar { width: 67px; height: 67px; display: grid; place-items: center; margin: 0 auto 11px; border-radius: 23px; background: #e7f0ff; font-size: 34px; }
+    .partner-card h3 { margin: 0; font-size: 15px; font-weight: 900; }
+    .partner-card p { color: var(--muted); font-size: 11px; font-weight: 700; margin: 4px 0 13px; }
+    .tag { display: inline-block; background: #f0f5ff; color: #5573aa; border-radius: 20px; padding: 5px 9px; font-size: 10px; font-weight: 900; margin: 2px; }
+    .tutor-layout { display: grid; grid-template-columns: 270px 1fr; gap: 15px; min-height: 510px; }
+    .tutor-aside { padding: 22px; background: linear-gradient(155deg, #ddebff, #f1f6ff); text-align: center; }
+    .tutor-aside .big-mascot { font-size: 91px; margin: 7px 0; }
+    .tutor-aside h3 { margin: 0 0 5px; font-size: 18px; }
+    .tutor-aside p { margin: 0; color: var(--muted); font-size: 11px; font-weight: 700; }
+    .chat-card { display: flex; flex-direction: column; overflow: hidden; }
+    .chat-head { padding: 17px 20px; border-bottom: 1px solid #edf1f8; display: flex; align-items: center; gap: 10px; }
+    .chat-head strong { font-size: 14px; }
+    .online-dot { width: 8px; height: 8px; background: #35c98b; border-radius: 50%; display: inline-block; margin-left: 4px; }
+    .chat-messages { flex: 1; min-height: 320px; max-height: 440px; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+    .bubble { max-width: 78%; padding: 12px 15px; border-radius: 16px; font-size: 12px; font-weight: 700; line-height: 1.5; }
+    .bubble.bot { background: #eff5ff; border-bottom-left-radius: 5px; align-self: flex-start; }
+    .bubble.user { background: var(--blue); color: white; border-bottom-right-radius: 5px; align-self: flex-end; }
+    .chat-compose { display: flex; gap: 9px; padding: 14px; border-top: 1px solid #edf1f8; }
+    .chat-compose input { flex: 1; min-width: 0; }
+    .disclaimer { color: #9aa7bf; font-size: 10px; text-align: center; padding: 0 12px 12px; }
+    .toast { position: fixed; z-index: 100; bottom: 25px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; padding: 11px 16px; border-radius: 13px; color: white; background: #18376f; box-shadow: 0 10px 25px rgba(0,0,0,.16); font-size: 12px; font-weight: 800; transition: .25s; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    .mobile-nav { display: none; }
+    @media (max-width: 1050px) {
+      .sidebar { width: 205px; }
+      .main-area { margin-left: 235px; padding-right: 17px; }
+      .hero { min-height: 225px; }
+      .hero-mascot { right: 12px; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .partner-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 760px) {
+      body { background: #f1f6ff; }
+      .sidebar { display: none; }
+      .main-area { margin: 0; padding: 12px 13px 100px; }
+      .topbar { min-height: 52px; gap: 9px; margin-bottom: 15px; }
+      .mobile-brand { display: flex; align-items: center; gap: 6px; color: var(--blue); font-weight: 900; font-size: 21px; letter-spacing: -.5px; white-space: nowrap; }
+      .mobile-brand .mini-penguin { font-size: 24px; }
+      .search-wrap { display: none; }
+      .topbar-spacer { display: block; }
+      .profile-button { padding: 3px; border: 0; background: transparent; }
+      .avatar { width: 37px; height: 37px; border: 1px solid #dfe9fb; }
+      .icon-button { width: 39px; height: 39px; border-radius: 13px; }
+      .page-heading { align-items: flex-start; margin: 5px 0 17px; }
+      .page-heading .primary-btn { padding: 9px 11px; font-size: 11px; white-space: nowrap; }
+      h1 { font-size: 26px; }
+      .subtitle { font-size: 12px; }
+      .hero { min-height: 190px; padding: 23px 18px; border-radius: 21px; margin-bottom: 13px; }
+      .hero-copy { max-width: 66%; }
+      .hero-copy h2 { font-size: clamp(24px, 7vw, 34px); letter-spacing: -1px; }
+      .hero-copy p { font-size: 11px; max-width: 180px; margin-bottom: 13px; }
+      .hero-copy .primary-btn { padding: 9px 12px; font-size: 11px; }
+      .hero-mascot { font-size: 125px; right: -10px; bottom: -5px; }
+      .sparkle { right: 105px; top: 18px; font-size: 25px; }
+      .stats-grid { gap: 8px; margin-bottom: 13px; }
+      .stat-card { min-height: 93px; padding: 11px 9px; display: block; border-radius: 16px; }
+      .stat-icon { width: 32px; height: 32px; border-radius: 11px; font-size: 17px; margin-bottom: 6px; }
+      .stat-label { font-size: 9px; line-height: 1.1; }
+      .stat-value { font-size: 15px; }
+      .stat-note { display: none; }
+      .section-card { padding: 15px; }
+      .section-head { margin-bottom: 12px; }
+      .section-head h3 { font-size: 15px; }
+      .quick-tools { gap: 7px; }
+      .tool-tile { min-height: 93px; border-radius: 14px; font-size: 10px; }
+      .tool-tile .tool-emoji { font-size: 24px; }
+      .activity-row { gap: 8px; padding: 9px 0; }
+      .activity-text { font-size: 10px; }
+      .activity-time { font-size: 9px; }
+      .motivation { padding: 15px; min-height: 86px; margin-top: 13px; }
+      .motivation strong { font-size: 16px; }
+      .motivation span { font-size: 10px; }
+      .motivation .mascot { font-size: 50px; margin-right: 0; }
+      .schedule-layout, .flashcard-area, .notes-layout, .tutor-layout { grid-template-columns: 1fr; }
+      .calendar-card, .task-card { padding: 15px; }
+      .date-cell { min-height: 38px; }
+      .partner-grid { grid-template-columns: 1fr 1fr; gap: 9px; }
+      .partner-card { padding: 15px 9px; }
+      .partner-avatar { width: 54px; height: 54px; font-size: 27px; border-radius: 18px; }
+      .partner-card h3 { font-size: 13px; }
+      .partner-card p { font-size: 10px; }
+      .tutor-layout { min-height: auto; }
+      .tutor-aside { padding: 14px; }
+      .tutor-aside .big-mascot { font-size: 55px; margin: 0; }
+      .chat-messages { min-height: 280px; }
+      .mobile-nav {
+        position: fixed; z-index: 50; display: grid; grid-template-columns: repeat(5, 1fr);
+        left: 9px; right: 9px; bottom: max(9px, env(safe-area-inset-bottom));
+        padding: 8px 5px calc(8px + env(safe-area-inset-bottom));
+        border: 1px solid rgba(222,233,252,.95); border-radius: 20px;
+        background: rgba(255,255,255,.96); box-shadow: 0 9px 30px rgba(36,75,145,.16); backdrop-filter: blur(15px);
+      }
+      .mobile-nav .nav-btn { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 3px; min-height: 53px; padding: 4px 1px; border-radius: 13px; color: #71809f; font-size: 9px; line-height: 1.05; white-space: nowrap; }
+      .mobile-nav .nav-btn:hover { transform: none; }
+      .mobile-nav .nav-btn.active { background: #edf4ff; color: var(--blue); box-shadow: none; }
+    }
+    @media (max-width: 380px) {
+      .stats-grid { grid-template-columns: 1fr 1fr 1fr; }
+      .stat-card { padding: 9px 7px; }
+      .stat-label { font-size: 8px; }
+      .mobile-nav .nav-btn { font-size: 8px; }
+      .hero-copy { max-width: 72%; }
+      .hero-mascot { font-size: 108px; right: -18px; }
+    }
+
+
+    /* ─────────────────────────────────────────────────────────────
+       PiKo 2.0 visual refresh — richer color, depth and motion
+       ───────────────────────────────────────────────────────────── */
+    :root {
+      --blue: #2868f0;
+      --blue-dark: #153b9c;
+      --blue-soft: #e8f0ff;
+      --blue-pale: #f4f7ff;
+      --orange: #ff9c3d;
+      --ink: #17284e;
+      --muted: #7887a7;
+      --line: #e3eaf8;
+      --surface: rgba(255,255,255,.88);
+      --shadow: 0 16px 45px rgba(34, 79, 157, .10);
+      --radius: 24px;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', 'Nunito', system-ui, sans-serif;
+      background:
+        radial-gradient(ellipse at 85% 6%, rgba(155,199,255,.34), transparent 31%),
+        radial-gradient(ellipse at 5% 72%, rgba(255,190,119,.13), transparent 26%),
+        linear-gradient(135deg, #edf4ff 0%, #f8faff 48%, #eaf2ff 100%);
+      background-attachment: fixed;
+    }
+    body::before, body::after {
+      content: ''; position: fixed; z-index: -1; pointer-events: none; border-radius: 50%;
+      filter: blur(1px); opacity: .55;
+    }
+    body::before { width: 360px; height: 360px; right: -170px; top: 16%; background: radial-gradient(circle, rgba(120,171,255,.22), transparent 68%); }
+    body::after { width: 300px; height: 300px; left: 12%; bottom: -190px; background: radial-gradient(circle, rgba(255,181,105,.18), transparent 68%); }
+    .sidebar {
+      width: 246px; inset: 16px auto 16px 16px; padding: 24px 17px 17px;
+      border: 1px solid rgba(255,255,255,.95); border-radius: 30px;
+      background: linear-gradient(160deg, rgba(255,255,255,.96), rgba(244,248,255,.91));
+      box-shadow: 0 20px 55px rgba(35,78,151,.13), inset 0 1px 0 white;
+      backdrop-filter: blur(22px);
+    }
+    .brand { padding: 2px 8px 35px; gap: 12px; }
+    .brand-mark {
+      width: 54px; height: 54px; border-radius: 19px; font-size: 32px;
+      background: linear-gradient(145deg, #dceaff, #fff 58%, #ffefd9);
+      box-shadow: 0 8px 20px rgba(61,119,226,.14), inset 0 0 0 1px #d7e5ff;
+    }
+    .brand-name { font-size: 31px; letter-spacing: -1.4px; }
+    .brand-tag { font-size: 9px; letter-spacing: 1.45px; }
+    .nav-label { color: #9aa9c4; padding-bottom: 13px; }
+    .nav-list { gap: 9px; }
+    .nav-btn {
+      min-height: 54px; padding: 0 15px; border-radius: 17px; color: #506181;
+      font-size: 13px; letter-spacing: -.15px; position: relative;
+    }
+    .nav-btn:hover { background: #eff5ff; color: var(--blue); transform: translateX(3px); }
+    .nav-btn.active {
+      color: white; background: linear-gradient(110deg, #4c91ff, #2868f0 70%, #235be0);
+      box-shadow: 0 11px 22px rgba(40,104,240,.25), inset 0 1px 0 rgba(255,255,255,.24);
+    }
+    .nav-btn.active::after { content: ''; position: absolute; right: 12px; width: 6px; height: 6px; border-radius: 50%; background: #ffc16f; box-shadow: 0 0 10px #ffc16f; }
+    .mascot-card {
+      padding: 17px 13px 15px; border-radius: 23px;
+      background: radial-gradient(circle at 50% 0%, #fff 0, transparent 56%), linear-gradient(145deg, #e8f2ff, #d9e9ff 75%, #ffeedb);
+      border: 1px solid #dce9ff; box-shadow: inset 0 1px 0 white;
+    }
+    .mascot-card .mascot { font-size: 61px; filter: drop-shadow(0 7px 5px rgba(31,75,140,.15)); }
+    .mascot-card strong { font-size: 13px; }
+    .main-area { margin-left: 280px; padding: 19px 28px 38px 8px; max-width: 1800px; }
+    .topbar { min-height: 66px; margin-bottom: 21px; }
+    .search-wrap { max-width: 610px; }
+    .search-wrap input {
+      height: 51px; border: 1px solid rgba(214,227,250,.95); border-radius: 18px;
+      background: rgba(255,255,255,.82); box-shadow: 0 8px 22px rgba(44,85,153,.055);
+      transition: .2s ease;
+    }
+    .search-wrap input:focus { border-color: #92b6ff; box-shadow: 0 0 0 4px rgba(54,119,239,.10); }
+    .icon-button, .profile-button {
+      border-color: rgba(218,229,248,.95); box-shadow: 0 6px 17px rgba(40,74,130,.06);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .icon-button:hover, .profile-button:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(40,74,130,.12); }
+    .page.active { animation: pagePop .32s cubic-bezier(.2,.7,.2,1); }
+    @keyframes pagePop { from { opacity: 0; transform: translateY(9px) scale(.995); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .page-heading { margin-bottom: 23px; }
+    .eyebrow { letter-spacing: 1.7px; font-size: 10px; }
+    h1 { letter-spacing: -1.2px; }
+    .subtitle { line-height: 1.6; }
+    .primary-btn {
+      background: linear-gradient(110deg, #4388ff, #2868f0 72%, #2358d5);
+      box-shadow: 0 9px 19px rgba(40,104,240,.22), inset 0 1px 0 rgba(255,255,255,.22);
+    }
+    .primary-btn:hover { background: linear-gradient(110deg, #347af2, #1d57d4); box-shadow: 0 12px 24px rgba(40,104,240,.28); transform: translateY(-2px); }
+    .secondary-btn { box-shadow: inset 0 0 0 1px rgba(255,255,255,.6); }
+    .card { border: 1px solid rgba(255,255,255,.96); box-shadow: 0 12px 34px rgba(42,82,151,.075), inset 0 1px 0 rgba(255,255,255,.9); backdrop-filter: blur(16px); }
+    .hero {
+      min-height: 278px; padding: 37px 42px; margin-bottom: 21px;
+      background: radial-gradient(circle at 80% 18%, rgba(255,255,255,.28), transparent 25%),
+                  linear-gradient(115deg, #d9eaff 0%, #a9ceff 48%, #c9e1ff 100%);
+      border: 1px solid rgba(202,224,255,.95); border-radius: 29px;
+      box-shadow: 0 17px 36px rgba(52,105,186,.10), inset 0 1px 0 rgba(255,255,255,.8);
+    }
+    .hero::before { width: 300px; height: 300px; right: 190px; top: -180px; border: 1px solid rgba(255,255,255,.32); background: rgba(255,255,255,.14); }
+    .hero::after { width: 410px; height: 410px; right: -85px; bottom: -315px; background: rgba(255,255,255,.2); }
+    .hero-copy { max-width: 57%; }
+    .hero-copy h2 { font-size: clamp(34px, 4.2vw, 53px); letter-spacing: -2.1px; text-shadow: 0 2px 0 rgba(255,255,255,.25); }
+    .hero-copy h2 span { color: #1457d8; }
+    .hero-copy p { color: #315a9d; font-size: 15px; letter-spacing: -.2px; }
+    .hero-mascot { right: 65px; bottom: -22px; font-size: clamp(160px, 20vw, 238px); filter: drop-shadow(0 17px 11px rgba(35,83,151,.18)); animation: mascotFloat 5s ease-in-out infinite; }
+    @keyframes mascotFloat { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-9px) rotate(1deg); } }
+    .sparkle { right: 255px; top: 28px; color: #ffac39; text-shadow: 0 3px 8px rgba(255,173,57,.25); animation: twinkle 2.8s ease-in-out infinite; }
+    @keyframes twinkle { 0%,100% { opacity: .65; transform: scale(.9) rotate(0); } 50% { opacity: 1; transform: scale(1.12) rotate(12deg); } }
+    .stats-grid { gap: 15px; margin-bottom: 21px; }
+    .stat-card { min-height: 116px; padding: 19px 20px; border-radius: 22px; transition: transform .22s ease, box-shadow .22s ease; }
+    .stat-card:hover { transform: translateY(-4px); box-shadow: 0 18px 38px rgba(42,82,151,.12); }
+    .stat-icon { border-radius: 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
+    .stat-value { letter-spacing: -.6px; }
+    .dashboard-grid { gap: 17px; }
+    .section-card { padding: 22px; }
+    .section-head h3 { letter-spacing: -.5px; }
+    .tool-tile { min-height: 125px; border: 1px solid rgba(255,255,255,.85); box-shadow: inset 0 1px 0 rgba(255,255,255,.7); }
+    .tool-tile:hover { transform: translateY(-5px) scale(1.015); box-shadow: 0 12px 23px rgba(55,88,150,.10); }
+    .tool-tile .tool-emoji { font-size: 32px; filter: drop-shadow(0 4px 2px rgba(33,56,110,.10)); }
+    .tool-tile.purple { background: linear-gradient(145deg,#f4eeff,#e9e0ff); }
+    .tool-tile.blue { background: linear-gradient(145deg,#edf5ff,#dceaff); }
+    .tool-tile.orange { background: linear-gradient(145deg,#fff7ea,#ffe9cc); }
+    .activity-row { padding: 13px 0; }
+    .activity-emoji { border-radius: 14px; }
+    .motivation {
+      margin-top: 18px; min-height: 126px; padding: 20px 27px; border-radius: 25px;
+      background: radial-gradient(circle at 78% 0%, rgba(255,255,255,.58), transparent 30%), linear-gradient(105deg, #e3efff, #cfe3ff);
+      border: 1px solid #d2e3ff; box-shadow: 0 10px 25px rgba(52,105,186,.07);
+    }
+    .motivation .mascot { font-size: 84px; filter: drop-shadow(0 8px 5px rgba(31,75,140,.12)); }
+    .schedule-layout { gap: 18px; }
+    .calendar-card, .task-card { padding: 23px; }
+    .date-cell { transition: .16s ease; }
+    .date-cell:not(.muted):hover { transform: translateY(-2px); background: #e5efff; }
+    .date-cell.today:hover { background: #1e58d5; }
+    .task-item { background: rgba(255,255,255,.65); transition: .18s ease; }
+    .task-item:hover { border-color: #cfdef8; transform: translateX(2px); }
+    .field { background: rgba(250,252,255,.95); transition: .18s ease; }
+    .field:focus { border-color: #95b7f6; box-shadow: 0 0 0 4px rgba(54,119,239,.09); outline: 0; }
+    .study-intro { padding: 24px; border-radius: 22px; background: radial-gradient(circle at 90% 10%,rgba(255,255,255,.85),transparent 28%), linear-gradient(110deg,#e5f0ff,#f5f8ff); box-shadow: inset 0 1px 0 white; }
+    .study-intro h2 { letter-spacing: -.6px; }
+    .tab-btn { transition: .18s ease; }
+    .tab-btn:hover { border-color: #b8cdf3; transform: translateY(-1px); }
+    .tab-btn.active { box-shadow: 0 8px 17px rgba(40,104,240,.18); }
+    .flashcard-view { border-radius: 24px; box-shadow: 0 15px 35px rgba(46,91,166,.08), inset 0 1px 0 white; transition: transform .2s ease; }
+    .flashcard-view:hover { transform: translateY(-3px); }
+    .calculator { border-radius: 24px; box-shadow: var(--shadow); }
+    .calc-key { transition: transform .12s ease, filter .12s ease; }
+    .calc-key:hover { transform: translateY(-2px); filter: brightness(.98); }
+    .partner-card { transition: transform .22s ease, box-shadow .22s ease; }
+    .partner-card:hover { transform: translateY(-5px); box-shadow: 0 18px 36px rgba(42,82,151,.12); }
+    .partner-avatar { box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
+    .tutor-aside { border-radius: 24px; }
+    .chat-card { border-radius: 24px; }
+    .chat-head { background: rgba(248,251,255,.7); }
+    .bubble { border-radius: 18px; }
+    .mobile-nav {
+      border-color: rgba(213,226,249,.95);
+      box-shadow: 0 12px 34px rgba(31,70,140,.18), 0 2px 7px rgba(31,70,140,.06);
+    }
+    .mobile-nav .nav-btn.active { background: linear-gradient(145deg,#edf4ff,#e5efff); }
+    .toast { border: 1px solid rgba(255,255,255,.16); backdrop-filter: blur(12px); }
+
+    /* Optional dark appearance, saved on this device. */
+    body.dark-theme {
+      --ink: #edf3ff; --muted: #a2b1ce; --line: #293a5b; --surface: rgba(22,35,61,.92);
+      background: radial-gradient(ellipse at 85% 6%, rgba(40,91,180,.22), transparent 32%), linear-gradient(135deg,#0d1830,#111f3c 55%,#101a32);
+      color: var(--ink);
+    }
+    body.dark-theme .sidebar { background: linear-gradient(160deg,rgba(24,40,70,.97),rgba(17,30,55,.96)); border-color: rgba(130,165,225,.15); }
+    body.dark-theme .brand-tag, body.dark-theme .nav-label, body.dark-theme .sidebar-foot { color: #8ea2c8; }
+    body.dark-theme .nav-btn { color: #b3c2df; }
+    body.dark-theme .nav-btn:hover { background: #22385f; }
+    body.dark-theme .mascot-card, body.dark-theme .study-intro, body.dark-theme .tutor-aside { background: linear-gradient(145deg,#223b66,#1a2d50); border-color: #2d4774; }
+    body.dark-theme .mascot-card span { color: #a7b8d7; }
+    body.dark-theme .search-wrap input, body.dark-theme .icon-button, body.dark-theme .profile-button { background: #182b4c; color: #eaf1ff; border-color: #2a4067; }
+    body.dark-theme .hero { background: radial-gradient(circle at 80% 18%,rgba(255,255,255,.10),transparent 25%),linear-gradient(115deg,#203f75,#285ba5 52%,#244b85); border-color: #345c96; }
+    body.dark-theme .hero-copy h2 { color: #f4f7ff; }
+    body.dark-theme .hero-copy h2 span { color: #ffb45e; }
+    body.dark-theme .hero-copy p { color: #d2e2ff; }
+    body.dark-theme .card, body.dark-theme .stat-card, body.dark-theme .section-card, body.dark-theme .calendar-card, body.dark-theme .task-card, body.dark-theme .form-card, body.dark-theme .note-card, body.dark-theme .partner-card, body.dark-theme .chat-card { background: rgba(22,35,61,.92); border-color: rgba(125,157,210,.15); }
+    body.dark-theme .stat-label, body.dark-theme .stat-note, body.dark-theme .task-info span, body.dark-theme .partner-card p, body.dark-theme .study-intro p, body.dark-theme .tutor-aside p { color: #a4b4d2; }
+    body.dark-theme .tool-tile.purple { background: linear-gradient(145deg,#3d3266,#30284f); color: #f3edff; }
+    body.dark-theme .tool-tile.blue { background: linear-gradient(145deg,#263f69,#1e3458); color: #e9f2ff; }
+    body.dark-theme .tool-tile.orange { background: linear-gradient(145deg,#59412c,#49331f); color: #fff1df; }
+    body.dark-theme .activity-row, body.dark-theme .chat-head, body.dark-theme .chat-compose { border-color: #2b3d60; }
+    body.dark-theme .activity-text, body.dark-theme .section-head h3, body.dark-theme .calendar-top strong, body.dark-theme .note-card h3, body.dark-theme .form-card h3 { color: #edf3ff; }
+    body.dark-theme .motivation { background: linear-gradient(105deg,#213d6d,#1b3156); border-color: #2d4b7b; }
+    body.dark-theme .motivation strong { color: #b8d2ff; }
+    body.dark-theme .motivation span { color: #a8bfeb; }
+    body.dark-theme .date-cell { color: #c3d0e9; }
+    body.dark-theme .date-cell.muted { color: #627596; }
+    body.dark-theme .date-cell:not(.muted):hover { background: #263f69; }
+    body.dark-theme .date-cell.today { color: white; }
+    body.dark-theme .task-item, body.dark-theme .note-entry, body.dark-theme .saved-row { background: #1a2c4b; border-color: #2d4166; }
+    body.dark-theme .field, body.dark-theme .calc-display { background: #142441; color: #edf3ff; border-color: #2b4168; }
+    body.dark-theme .field::placeholder { color: #8195ba; }
+    body.dark-theme .tab-btn { background: #192c4b; border-color: #2b4168; color: #a9b9d6; }
+    body.dark-theme .tab-btn.active { background: var(--blue); color: white; }
+    body.dark-theme .flashcard-view { background: linear-gradient(140deg,#1a2f53,#172744); border-color: #2b426b; }
+    body.dark-theme .flashcard-view span { color: #a5b5d2; }
+    body.dark-theme .calc-key { background: #263c61; color: #e4edff; }
+    body.dark-theme .calc-key.operator { background: #59412c; color: #ffd49b; }
+    body.dark-theme .calc-key.clear { background: #522e3b; color: #ffb9c5; }
+    body.dark-theme .calc-key.equal { background: var(--blue); color: white; }
+    body.dark-theme .tag { background: #263e66; color: #c4d7fa; }
+    body.dark-theme .bubble.bot { background: #20375e; color: #edf3ff; }
+    body.dark-theme .mobile-nav { background: rgba(20,34,59,.96); border-color: #30466c; }
+    body.dark-theme .mobile-nav .nav-btn { color: #9fb1d3; }
+    body.dark-theme .mobile-nav .nav-btn.active { background: #223b65; color: #8db7ff; }
+    body.dark-theme .empty-state { color: #a2b1ce; }
+
+    @media (max-width: 1050px) {
+      .sidebar { width: 218px; }
+      .main-area { margin-left: 250px; padding-right: 19px; }
+      .hero { min-height: 245px; }
+      .hero-mascot { right: 20px; }
+    }
+    @media (max-width: 760px) {
+      .main-area { padding: 12px 13px 104px; }
+      .topbar { margin-bottom: 16px; }
+      .hero { min-height: 196px; padding: 23px 18px; border-radius: 23px; }
+      .hero-mascot { right: -7px; bottom: -8px; font-size: 132px; }
+      .hero-copy { max-width: 67%; }
+      .hero-copy h2 { font-size: clamp(25px,7vw,35px); }
+      .hero-copy p { font-size: 11px; }
+      .sparkle { right: 106px; top: 16px; }
+      .motivation { border-radius: 20px; }
+      body.dark-theme { background: linear-gradient(135deg,#0d1830,#111f3c 55%,#101a32); }
+      body.dark-theme .mobile-nav { background: rgba(20,34,59,.97); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+
+
+    /* Text-only layout: image and icon slots are intentionally omitted for custom assets later. */
+    .brand { padding-left: 8px; }
+    .mascot-card { text-align: left; min-height: 92px; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+    .mascot-card strong { margin: 0; font-size: 14px; }
+    .mascot-card span { line-height: 1.55; }
+    .nav-btn { justify-content: flex-start; gap: 0; }
+    .stat-card { gap: 0; }
+    .tool-tile { font-size: 13px; }
+    .activity-list { min-height: 110px; align-content: center; }
+    .partner-empty { padding: 36px 24px; text-align: center; max-width: 760px; margin: 0 auto; }
+    .partner-empty h3 { margin: 0 0 8px; font-size: 19px; }
+    .partner-empty p { color: var(--muted); line-height: 1.7; max-width: 510px; margin: 0 auto 18px; font-size: 13px; }
+    .tutor-aside { display: flex; flex-direction: column; justify-content: center; }
+    .tutor-empty { margin: auto; }
+    .chat-messages { min-height: 320px; }
+    .topbar .secondary-btn, .topbar .primary-btn { white-space: nowrap; }
+    .auth-overlay { position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(11,25,53,.48); backdrop-filter: blur(8px); }
+    .auth-overlay.open { display: flex; }
+    .auth-panel { position: relative; width: min(100%, 440px); max-height: min(92vh, 760px); overflow-y: auto; padding: 30px; border: 1px solid rgba(255,255,255,.95); border-radius: 26px; background: #fff; color: #17284e; box-shadow: 0 28px 90px rgba(10,30,70,.28); animation: authEnter .22s ease; }
+    @keyframes authEnter { from { opacity: 0; transform: translateY(8px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .auth-close { display: block; margin-left: auto; border: 0; padding: 7px 10px; border-radius: 10px; background: #eff4ff; color: #31558f; font-weight: 800; font-size: 11px; }
+    .auth-brand { margin: 8px 0 20px; color: #2868f0; font-size: 30px; font-weight: 900; letter-spacing: -1.4px; }
+    .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; gap: 5px; border-radius: 13px; background: #f0f4fc; margin-bottom: 22px; }
+    .auth-tab { border: 0; border-radius: 10px; padding: 10px; background: transparent; color: #6f7d99; font-size: 12px; font-weight: 900; }
+    .auth-tab.active { color: #fff; background: #2868f0; box-shadow: 0 5px 12px rgba(40,104,240,.18); }
+    .auth-panel h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -.7px; }
+    .auth-description { margin: 0 0 20px; color: #7887a7; font-size: 12px; line-height: 1.6; }
+    .auth-form { display: grid; gap: 13px; }
+    .auth-field-wrap { display: grid; gap: 7px; color: #52627f; font-size: 11px; font-weight: 900; }
+    .auth-field-wrap[hidden] { display: none; }
+    .auth-field-wrap .field { min-height: 46px; background: #fbfdff; }
+    .auth-submit { width: 100%; min-height: 47px; margin-top: 4px; }
+    .auth-forgot { display: block; margin: 14px auto 0; padding: 5px; border: 0; background: transparent; color: #2868f0; font-size: 11px; font-weight: 900; }
+    .auth-note { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid #e8eef8; color: #8a96ad; font-size: 10px; line-height: 1.6; text-align: center; }
+    body.dark-theme .auth-panel { background: #172844; color: #edf3ff; border-color: #30466c; }
+    body.dark-theme .auth-panel .auth-description, body.dark-theme .auth-panel .auth-note { color: #a2b1ce; }
+    body.dark-theme .auth-field-wrap { color: #c0cce2; }
+    body.dark-theme .auth-field-wrap .field { background: #142441; color: #edf3ff; border-color: #2b4168; }
+    body.dark-theme .auth-tabs { background: #20385f; }
+    body.dark-theme .auth-tab { color: #bcc9df; }
+    body.dark-theme .auth-tab.active { color: #fff; }
+    body.dark-theme .auth-close { background: #263e66; color: #d6e3fb; }
+    @media (max-width: 760px) {
+      .topbar { gap: 7px; }
+      .topbar .theme-toggle, .topbar #notificationButton { display: none; }
+      .topbar .login-open { padding: 9px 13px; font-size: 11px; }
+      .mobile-brand { font-size: 23px; }
+      .auth-panel { padding: 23px 19px; border-radius: 22px; }
+      .partner-empty { padding: 28px 18px; }
+    }
+
+
+
+  /* Final responsive width correction.
+     The 1050px tablet rule was re-applying a left margin on phones,
+     even though the sidebar is hidden there. Reset the content to full width. */
+  .app-shell { width: 100%; max-width: 100%; min-width: 0; }
+  .main-area { box-sizing: border-box; min-width: 0; }
+  .page { width: 100%; min-width: 0; }
+  .page > *, .topbar > * { min-width: 0; }
+
+  @media (min-width: 761px) and (max-width: 1050px) {
+    .main-area {
+      width: calc(100% - 250px);
+      margin-left: 250px;
+      max-width: none;
+    }
   }
-}
-
-@media(max-width: 850px) {
-  .sidebar {
-    transform: translateX(-100%);
+  @media (min-width: 1051px) {
+    .main-area {
+      width: calc(100% - 280px);
+      margin-left: 280px;
+      max-width: none;
+    }
+  }
+  @media (max-width: 760px) {
+    html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+    .app-shell { width: 100%; max-width: 100%; min-width: 0; }
+    .sidebar { display: none !important; }
+    .main-area {
+      display: block;
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 12px 13px calc(104px + env(safe-area-inset-bottom)) !important;
+    }
+    .topbar, .page, .page-heading, .study-intro, .study-tabs,
+    .study-panel, .notes-layout, .note-card, .form-card {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+    }
+    .schedule-layout, .flashcard-area, .notes-layout, .tutor-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .mobile-nav { left: 9px; right: 9px; width: auto; max-width: none; }
+    .field, .calc-display { max-width: 100%; }
   }
 
-  .sidebar.open {
-    transform: translateX(0);
-    box-shadow: 15px 0 35px rgba(0,0,0,.1);
-  }
 
-  .main {
-    margin-left: 0;
-  }
+    /* Study Table chooser and folders */
+    .study-choice-view { width: 100%; }
+    .study-choice-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .study-choice-card {
+      min-height: 190px; padding: 22px 19px; border: 1px solid #dce8fb; border-radius: 22px;
+      background: rgba(255,255,255,.9); color: var(--ink); box-shadow: var(--shadow);
+      display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 11px;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .study-choice-card:hover { transform: translateY(-4px); border-color: #a9c8ff; box-shadow: 0 15px 32px rgba(48,91,169,.14); }
+    .study-choice-card:focus-visible { outline: 3px solid rgba(37,99,235,.25); outline-offset: 3px; }
+    .study-choice-number { color: var(--blue); font-size: 11px; font-weight: 900; letter-spacing: 1.5px; }
+    .study-choice-card strong { font-size: 21px; font-weight: 900; letter-spacing: -.5px; }
+    .study-choice-description { color: var(--muted); font-size: 12px; line-height: 1.55; font-weight: 700; }
+    .study-workspace[hidden] { display: none !important; }
+    .study-workspace-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 15px; }
+    .study-current-label { color: var(--muted); font-size: 12px; font-weight: 900; }
+    .study-field-label { color: var(--muted); font-size: 11px; font-weight: 900; margin: 3px 0 -4px; }
+    .folder-layout { display: grid; grid-template-columns: minmax(230px,.72fr) minmax(0,1.4fr); gap: 15px; }
+    .folder-create-card, .folder-list-card { padding: 20px; }
+    .folder-create-card h3 { margin: 0 0 13px; font-size: 16px; }
+    .folder-list { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+    .folder-item { min-width: 0; padding: 14px; border: 1px solid #e4ecf9; border-top: 4px solid var(--item-accent, #bfdbfe); border-radius: 15px; background: color-mix(in srgb, var(--item-accent, #bfdbfe) 12%, white); }
+    .folder-item strong { display: block; overflow-wrap: anywhere; font-size: 13px; font-weight: 900; }
+    .folder-item p { margin: 5px 0 11px; color: var(--muted); font-size: 11px; font-weight: 700; }
+    .folder-item .small-btn { margin-top: 2px; }
+    .design-field { display: grid; gap: 9px; margin: 5px 0 3px; }
+    .design-field-title { color: var(--muted); font-size: 11px; font-weight: 900; }
+    .color-options { display: flex; flex-wrap: wrap; gap: 9px; }
+    .color-wheel-control { display: inline-flex; align-items: center; gap: 9px; width: fit-content; color: var(--muted); font-size: 11px; font-weight: 800; }
+    .color-wheel-input { width: 42px; height: 34px; padding: 3px; border: 1px solid #dce6f6; border-radius: 10px; background: white; cursor: pointer; }
+    .color-wheel-input::-webkit-color-swatch-wrapper { padding: 0; }
+    .color-wheel-input::-webkit-color-swatch { border: 0; border-radius: 6px; }
+    .color-wheel-input::-moz-color-swatch { border: 0; border-radius: 6px; }
+    .color-hex { min-width: 66px; color: var(--ink); font-size: 10px; font-weight: 900; letter-spacing: .3px; }
+    body.dark-theme .color-wheel-input { background: #182b4c; border-color: #39527b; }
+    .color-option { position: relative; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+    .color-option input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+    .color-option span { width: 29px; height: 29px; display: block; border-radius: 50%; background: var(--swatch); border: 2px solid rgba(20,36,71,.12); box-shadow: inset 0 0 0 2px rgba(255,255,255,.45); transition: transform .16s ease, box-shadow .16s ease; }
+    .color-option input:checked + span { outline: 3px solid var(--blue); outline-offset: 3px; transform: scale(1.06); }
+    .color-option input:focus-visible + span { outline: 3px solid var(--blue); outline-offset: 4px; }
+    .color-option:hover span { transform: scale(1.1); }
+    .flashcard-view { --card-accent: #bfdbfe; background: linear-gradient(140deg, #fff, color-mix(in srgb, var(--card-accent) 17%, white)); border-color: color-mix(in srgb, var(--card-accent) 70%, white); }
+    .note-entry { border-left: 4px solid var(--item-accent, #bfdbfe); background: color-mix(in srgb, var(--item-accent, #bfdbfe) 12%, white); }
+    body.dark-theme .study-choice-card { background: rgba(22,35,61,.92); border-color: rgba(125,157,210,.2); color: var(--ink); }
+    body.dark-theme .folder-item { background: #1a2c4b; border-color: #2d4166; }
+    @media (max-width: 1050px) { .study-choice-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+    @media (max-width: 760px) {
+      .study-choice-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+      .study-choice-card { min-height: 160px; padding: 17px 14px; border-radius: 17px; }
+      .study-choice-card strong { font-size: 17px; }
+      .study-choice-description { font-size: 11px; }
+      .folder-layout { grid-template-columns: minmax(0,1fr); }
+      .folder-list { grid-template-columns: minmax(0,1fr); }
+    }
 
-  .mobile-menu {
-    display: grid;
-  }
 
-  .topbar {
-    padding: 0 18px;
-  }
-
-  .content {
-    padding: 25px 18px;
-  }
-}
-
-@media(max-width: 600px) {
-  .search-box {
-    width: 160px;
-  }
-
-  .welcome h1 {
-    font-size: 21px;
-  }
-
-  .welcome-image {
-    width: 75px;
-    height: 75px;
-  }
-
-  .shortcuts {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .activity-time {
-    display: none;
-  }
-}
-
-@media(max-width: 390px) {
-  .search-box {
-    width: 115px;
-  }
-
-  .topbar {
-    gap: 7px;
-  }
-}
-</style>
+    /* Optional custom image assets. Missing files are hidden until you upload them to GitHub. */
+    [data-optional-image][hidden] { display: none !important; }
+    .brand-logo-image { width: 48px; height: 48px; flex: 0 0 48px; object-fit: contain; }
+    .mascot-card-image { display: block; width: 76px; height: 76px; object-fit: contain; margin: 0 auto 2px; }
+    .hero-mascot { width: clamp(160px, 20vw, 250px); height: auto; max-height: 96%; object-fit: contain; font-size: 0; }
+    .mobile-brand img { width: 31px; height: 31px; object-fit: contain; }
+    .tool-image { display: block; width: 42px; height: 42px; object-fit: contain; }
+    .study-choice-image { display: block; width: 84px; height: 84px; object-fit: contain; align-self: center; margin: 0 auto 5px; }
+    .tutor-mascot-image { display: block; width: 116px; height: 116px; max-width: 100%; object-fit: contain; margin: 0 auto 12px; }
+    .auth-brand { display: flex; align-items: center; gap: 9px; }
+    .auth-brand img { width: 43px; height: 43px; object-fit: contain; }
+    /* Custom navigation artwork: upload these files to assets/images/ on GitHub. */
+    .nav-btn { gap: 11px; }
+    .nav-btn .nav-image:not([hidden]) {
+      display: block; width: 25px; height: 25px; flex: 0 0 25px; object-fit: contain;
+    }
+    .mobile-nav .nav-btn { gap: 4px; }
+    .mobile-nav .nav-btn .nav-image:not([hidden]) {
+      width: 22px; height: 22px; flex: 0 0 22px;
+    }
+    @media (max-width: 760px) {
+      .hero-mascot { width: clamp(112px, 34vw, 155px); right: -7px; bottom: -5px; }
+      .study-choice-image { width: 68px; height: 68px; }
+      .tool-image { width: 34px; height: 34px; }
+    }
+  </style>
 </head>
-
 <body>
-
-<!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar">
-
-  <div class="brand">
-    <img src="assets/images/piko-logo.png" alt="PiKo Logo">
-    <div class="brand-name">Pi<span>Ko</span></div>
-  </div>
-
-  <div class="menu-label">MAIN MENU</div>
-
-  <nav class="sidebar-nav">
-
-    <button class="nav-link active" data-page="home">
-      <img class="image-icon" src="assets/icons/home.png" alt="">
-      Home
-    </button>
-
-    <button class="nav-link" data-page="passport">
-      <img class="image-icon" src="assets/icons/passport.png" alt="">
-      Student Passport
-    </button>
-
-    <button class="nav-link" data-page="community">
-      <img class="image-icon" src="assets/icons/community.png" alt="">
-      Student Community
-    </button>
-
-    <button class="nav-link" data-page="library">
-      <img class="image-icon" src="assets/icons/library.png" alt="">
-      Digital Library
-    </button>
-
-    <button class="nav-link" data-page="planner">
-      <img class="image-icon" src="assets/icons/planner.png" alt="">
-      Student Planner
-    </button>
-
-    <button class="nav-link" data-page="notes">
-      <img class="image-icon" src="assets/icons/notes.png" alt="">
-      Personal Notes
-    </button>
-
-    <button class="nav-link" data-page="calculator">
-      <img class="image-icon" src="assets/icons/calculator.png" alt="">
-      Student Calculator
-    </button>
-
-    <button class="nav-link" data-page="flashcards">
-      <img class="image-icon" src="assets/icons/flashcards.png" alt="">
-      Flashcards & Review
-    </button>
-
-    <button class="nav-link" data-page="partners">
-      <img class="image-icon" src="assets/icons/study-partners.png" alt="">
-      Study Partner Finder
-    </button>
-
-    <button class="nav-link" data-page="ai">
-      <img class="image-icon" src="assets/icons/ai-tutor.png" alt="">
-      AI Tutor
-      <span class="soon-label">SOON</span>
-    </button>
-
-    <div class="menu-label">ACCOUNT</div>
-
-    <button class="nav-link" data-page="notifications">
-      <img class="image-icon" src="assets/icons/notifications.png" alt="">
-      Notifications
-    </button>
-
-    <button class="nav-link" data-page="settings">
-      <img class="image-icon" src="assets/icons/settings.png" alt="">
-      Settings
-    </button>
-
-  </nav>
-
-  <div class="sidebar-bottom">
-    <div class="user-card">
-      <div class="avatar" id="sidebarAvatar">S</div>
-      <div class="user-info">
-        <strong id="sidebarName">Student</strong>
-        <small>Student Account</small>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="brand">
+        <img class="brand-logo-image" src="assets/images/piko-logo.png" alt="PiKo logo" data-optional-image>
+        <div><div class="brand-name">PiKo</div><div class="brand-tag">STUDENT COMPANION</div></div>
       </div>
-    </div>
-  </div>
-
-</aside>
-
-
-<!-- MAIN -->
-<div class="main">
-
-  <!-- TOPBAR -->
-  <header class="topbar">
-
-    <div class="topbar-left">
-
-      <button class="icon-button mobile-menu" id="mobileMenu">
-        <img src="assets/icons/menu.png" alt="Menu">
-      </button>
-
-      <div class="page-title" id="pageTitle">Home</div>
-
-    </div>
-
-    <div class="topbar-actions">
-
-      <div class="search-box">
-        <img src="assets/icons/search.png" alt="Search">
-        <input id="globalSearch" type="search" placeholder="Search PiKo...">
-      </div>
-
-      <button class="icon-button" id="darkMode" title="Toggle dark mode">
-        <img src="assets/icons/dark-mode.png" alt="Dark Mode">
-      </button>
-
-      <button class="icon-button" id="notificationBtn" title="Notifications">
-        <img src="assets/icons/notifications.png" alt="Notifications">
-      </button>
-
-      <button class="icon-button" id="profileBtn" title="Profile">
-        <img src="assets/icons/profile.png" alt="Profile">
-      </button>
-
-    </div>
-
-  </header>
-
-
-  <main class="content">
-
-    <!-- HOME PAGE -->
-    <section class="page-section active" id="page-home">
-
-      <div class="welcome">
-
-        <div>
-          <h1>Welcome back, <span id="welcomeName">Student</span></h1>
-          <p id="currentDate">Your personal space.</p>
+      <div class="nav-label">Main menu</div>
+      <nav class="nav-list" id="desktopNav">
+        <button class="nav-btn active" data-page="home"><img class="nav-image" src="assets/images/nav-home.png" alt="" data-optional-image><span>Home</span></button>
+        <button class="nav-btn" data-page="schedule"><img class="nav-image" src="assets/images/nav-schedule.png" alt="" data-optional-image><span>Planned / Schedule</span></button>
+        <button class="nav-btn" data-page="study"><img class="nav-image" src="assets/images/nav-study-table.png" alt="" data-optional-image><span>Study Table</span></button>
+        <button class="nav-btn" data-page="partners"><img class="nav-image" src="assets/images/nav-partners.png" alt="" data-optional-image><span>Partners</span></button>
+        <button class="nav-btn" data-page="tutor"><img class="nav-image" src="assets/images/nav-ai-tutor.png" alt="" data-optional-image><span>AI Tutor</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="mascot-card">
+          <img class="mascot-card-image" src="assets/images/piko-mascot.png" alt="PiKo mascot" data-optional-image>
+          <strong>Your learning space</strong><span>Plan, learn, and grow at your own pace.</span>
         </div>
-
-        <img
-          src="assets/images/piko-penguin.png"
-          alt="PiKo Penguin"
-          class="welcome-image"
-        >
-
+        <div class="sidebar-foot">Made for students</div>
       </div>
+    </aside>
 
+    <main class="main-area">
+      <header class="topbar">
+        <div class="mobile-brand"><img src="assets/images/piko-logo.png" alt="" data-optional-image> <span>PiKo</span></div>
+        <label class="search-wrap" aria-label="Search PiKo">
+          <input id="globalSearch" type="search" placeholder="Search on PiKo..." />
+        </label>
+        <div class="topbar-spacer"></div>
+        <button class="secondary-btn theme-toggle" id="themeButton" aria-label="Toggle dark mode" title="Toggle dark mode">Theme</button>
+        <button class="secondary-btn" id="notificationButton" aria-label="Notifications" title="Notifications">Notifications</button>
+        <button class="primary-btn login-open" id="loginButton" type="button">Log in</button>
+      </header>
 
-      <div class="dashboard-grid">
-
-        <section class="card">
-
-          <div class="card-header">
-            <h2>Recent Activity</h2>
-            <small>Your latest activities</small>
+      <!-- HOME -->
+      <section class="page active" id="page-home">
+        <div class="hero">
+          <div class="hero-copy">
+            <h2>Welcome to<br><span>PiKo!</span></h2>
+            <p>Study smart. Achieve more.</p>
+            <button class="primary-btn" data-go="study">Explore Study Table <span>→</span></button>
           </div>
-
-          <div id="recentActivities" class="recent-list">
-
-            <div class="empty-state">
-              <img src="assets/images/empty-activity.png" alt="No recent activity">
-              <h3>No recent activity yet</h3>
-              <p>Your recent work will appear here.</p>
+          <img class="hero-mascot" src="assets/images/piko-mascot.png" alt="PiKo mascot" data-optional-image>
+        </div>
+        <div class="stats-grid">
+          <article class="card stat-card"><div><div class="stat-label">Upcoming Schedule</div><div class="stat-value" id="homeNextDate">—</div><div class="stat-note" id="homeNextTitle">No upcoming events</div></div></article>
+          <article class="card stat-card"><div><div class="stat-label">Tasks Today</div><div class="stat-value" id="homeTaskCount">2 Tasks</div><div class="stat-note">Keep making progress</div></div></article>
+          <article class="card stat-card"><div><div class="stat-label">Your Streak</div><div class="stat-value">0 Days</div><div class="stat-note">A little study every day</div></div></article>
+        </div>
+        <div class="dashboard-grid">
+          <article class="card section-card">
+            <div class="section-head"><h3>Quick Access</h3><button class="link-btn" data-go="study">See all →</button></div>
+            <div class="quick-tools">
+              <button class="tool-tile purple" data-go="study" data-study-tab="flashcards"><img class="tool-image" src="assets/images/study-flashcards.png" alt="" data-optional-image>Flashcards</button>
+              <button class="tool-tile blue" data-go="study" data-study-tab="calculator"><img class="tool-image" src="assets/images/study-calculator.png" alt="" data-optional-image>Calculator</button>
+              <button class="tool-tile orange" data-go="study" data-study-tab="notes"><img class="tool-image" src="assets/images/study-notes.png" alt="" data-optional-image>Notes</button>
             </div>
+          </article>
+          <article class="card section-card">
+            <div class="section-head"><h3>Recent Activity</h3><button class="link-btn" data-go="schedule">See all →</button></div>
+<div class="activity-list" id="activityList"><div class="empty-state">Your recent activity will appear here.</div></div>
+          </article>
+        </div>
+        <div class="motivation"><div><strong>Make every study session count.</strong><span>Keep moving forward, one step at a time.</span></div></div>
+      </section>
 
-          </div>
+      <!-- SCHEDULE -->
+      <section class="page" id="page-schedule">
+        <div class="page-heading"><div><div class="eyebrow">Stay organized</div><h1>Planned / Schedule</h1><p class="subtitle">Keep track of classes, tasks, and important dates.</p></div><button class="primary-btn" id="focusAddTask">＋ Add task</button></div>
+        <div class="schedule-layout">
+          <article class="card calendar-card">
+            <div class="calendar-top"><strong id="calendarMonth">November 2026</strong><div class="month-controls"><button id="prevMonth" aria-label="Previous month">‹</button><button id="nextMonth" aria-label="Next month">›</button></div></div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+          </article>
+          <article class="card task-card">
+            <div class="section-head"><h3>My Tasks</h3><span class="tag" id="taskSummary">0 tasks</span></div>
+            <div class="task-list" id="taskList"></div>
+            <form class="inline-form" id="taskForm"><input class="field" id="taskInput" type="text" placeholder="Add a new task..." maxlength="90" required><button class="primary-btn" type="submit">Add</button></form>
+          </article>
+        </div>
+      </section>
 
-        </section>
+      <!-- STUDY TABLE -->
+      <section class="page" id="page-study">
+        <div class="page-heading"><div><div class="eyebrow">Your learning workspace</div><h1>Study Table</h1><p class="subtitle">Choose a tool and start your study session.</p></div></div>
 
-
-        <section class="card">
-
-          <div class="card-header">
-            <h2>Upcoming Tasks</h2>
-            <button class="text-link" onclick="showPage('planner')">
-              View all
+        <div class="study-choice-view" id="studyChoiceView">
+          <div class="study-intro"><h2>What do you want to study?</h2><p>Choose where you want to begin. You can return here anytime.</p></div>
+          <div class="study-choice-grid" aria-label="Choose a study tool">
+            <button class="study-choice-card" type="button" data-study-choice="folder">
+              <img class="study-choice-image" src="assets/images/study-folder.png" alt="" data-optional-image>
+              <span class="study-choice-number">01</span><strong>Folder</strong><span class="study-choice-description">Organize your study materials by subject or topic.</span>
+            </button>
+            <button class="study-choice-card" type="button" data-study-choice="flashcards">
+              <img class="study-choice-image" src="assets/images/study-flashcards.png" alt="" data-optional-image>
+              <span class="study-choice-number">02</span><strong>Flashcards</strong><span class="study-choice-description">Create question-and-answer cards for review.</span>
+            </button>
+            <button class="study-choice-card" type="button" data-study-choice="notes">
+              <img class="study-choice-image" src="assets/images/study-notes.png" alt="" data-optional-image>
+              <span class="study-choice-number">03</span><strong>Notes</strong><span class="study-choice-description">Write, save, and revisit your study notes.</span>
+            </button>
+            <button class="study-choice-card" type="button" data-study-choice="calculator">
+              <img class="study-choice-image" src="assets/images/study-calculator.png" alt="" data-optional-image>
+              <span class="study-choice-number">04</span><strong>Calculate</strong><span class="study-choice-description">Solve basic calculations while studying.</span>
             </button>
           </div>
-
-          <div id="homeTasks"></div>
-
-        </section>
-
-      </div>
-
-
-      <section class="card" style="margin-top:20px">
-
-        <div class="card-header">
-          <h2>Recently Updated Notes</h2>
-          <button class="text-link" onclick="showPage('notes')">
-            Open notes
-          </button>
         </div>
 
-        <div id="recentNotes"></div>
+        <div class="study-workspace" id="studyWorkspace" hidden>
+          <div class="study-workspace-top">
+            <button class="secondary-btn study-back-button" id="backToStudyChoices" type="button">Back to choices</button>
+            <span class="study-current-label" id="studyCurrentLabel">Study tool</span>
+          </div>
 
+          <div class="study-panel" id="tab-folder">
+            <div class="study-intro"><h2>Your folders</h2><p>Create folders to organize flashcards and notes by subject or topic.</p></div>
+            <div class="folder-layout">
+              <form class="card form-card folder-create-card" id="folderForm">
+                <h3>Create a folder</h3>
+                <div class="form-stack">
+                  <label class="study-field-label" for="folderName">Folder Name</label>
+                  <input class="field" id="folderName" placeholder="e.g. Science" maxlength="50" required>
+                  <div class="design-field">
+                    <span class="design-field-title">Color</span>
+                    <div class="color-options" role="radiogroup" aria-label="Folder color">
+                      <label class="color-option" title="Blue"><input type="radio" name="folderColor" value="#bfdbfe" checked><span style="--swatch:#bfdbfe"></span></label>
+                      <label class="color-option" title="Purple"><input type="radio" name="folderColor" value="#ddd6fe"><span style="--swatch:#ddd6fe"></span></label>
+                      <label class="color-option" title="Pink"><input type="radio" name="folderColor" value="#fbcfe8"><span style="--swatch:#fbcfe8"></span></label>
+                      <label class="color-option" title="Orange"><input type="radio" name="folderColor" value="#fed7aa"><span style="--swatch:#fed7aa"></span></label>
+                      <label class="color-option" title="Yellow"><input type="radio" name="folderColor" value="#fef08a"><span style="--swatch:#fef08a"></span></label>
+                      <label class="color-option" title="Green"><input type="radio" name="folderColor" value="#bbf7d0"><span style="--swatch:#bbf7d0"></span></label>
+                      <label class="color-option" title="Teal"><input type="radio" name="folderColor" value="#a5f3fc"><span style="--swatch:#a5f3fc"></span></label>
+                    </div>
+                    <label class="color-wheel-control" for="folderCustomColor">
+                      <span>Custom color</span>
+                      <input class="color-wheel-input" type="color" id="folderCustomColor" value="#bfdbfe" aria-label="Choose a custom folder color">
+                      <span class="color-hex" id="folderColorHex">#BFDBFE</span>
+                    </label>
+                  </div>
+                  <button class="primary-btn" type="submit">Create folder</button>
+                </div>
+              </form>
+              <section class="card folder-list-card">
+                <div class="section-head"><h3>My Folders</h3><span class="tag" id="folderCount">0 folders</span></div>
+                <div class="folder-list" id="folderList"><div class="empty-state">No folders yet. Create your first folder.</div></div>
+              </section>
+            </div>
+          </div>
+
+          <div class="study-panel" id="tab-flashcards">
+            <div class="flashcard-area">
+              <div>
+                <div class="card flashcard-view" id="flashcardView" title="Click to flip this flashcard"><div class="card-kicker" id="flashcardKicker">Your deck is empty</div><strong id="flashcardText">Create your first flashcard</strong><span>Tap a card to reveal its answer</span></div>
+                <div class="flashcard-controls"><button class="secondary-btn" id="prevCard">Previous</button><button class="primary-btn" id="flipCard">Flip card</button><button class="secondary-btn" id="nextCard">Next</button></div>
+              </div>
+              <form class="card form-card" id="flashcardForm"><h3>Create a flashcard</h3><div class="form-stack"><input class="field" id="flashQuestion" placeholder="Question or term" maxlength="150" required><textarea class="field" id="flashAnswer" placeholder="Answer or definition" maxlength="300" required></textarea><label class="study-field-label" for="flashcardFolder">Save to folder</label><select class="field" id="flashcardFolder"><option value="">Unsorted</option></select><div class="design-field"><span class="design-field-title">Card Color</span><div class="color-options" role="radiogroup" aria-label="Flashcard color"><label class="color-option" title="Blue"><input type="radio" name="flashcardColor" value="#bfdbfe" checked><span style="--swatch:#bfdbfe"></span></label><label class="color-option" title="Purple"><input type="radio" name="flashcardColor" value="#ddd6fe"><span style="--swatch:#ddd6fe"></span></label><label class="color-option" title="Pink"><input type="radio" name="flashcardColor" value="#fbcfe8"><span style="--swatch:#fbcfe8"></span></label><label class="color-option" title="Orange"><input type="radio" name="flashcardColor" value="#fed7aa"><span style="--swatch:#fed7aa"></span></label><label class="color-option" title="Yellow"><input type="radio" name="flashcardColor" value="#fef08a"><span style="--swatch:#fef08a"></span></label><label class="color-option" title="Green"><input type="radio" name="flashcardColor" value="#bbf7d0"><span style="--swatch:#bbf7d0"></span></label><label class="color-option" title="Teal"><input type="radio" name="flashcardColor" value="#a5f3fc"><span style="--swatch:#a5f3fc"></span></label></div><label class="color-wheel-control" for="flashcardCustomColor"><span>Custom color</span><input class="color-wheel-input" type="color" id="flashcardCustomColor" value="#bfdbfe" aria-label="Choose a custom flashcard color"><span class="color-hex" id="flashcardColorHex">#BFDBFE</span></label></div><button class="primary-btn" type="submit">Add flashcard</button></div><div class="saved-list" id="flashcardCount"></div></form>
+            </div>
+          </div>
+
+          <div class="study-panel" id="tab-notes">
+            <div class="notes-layout">
+              <form class="card note-card" id="noteForm"><h3>Create a note</h3><div class="form-stack"><input class="field" id="noteTitle" placeholder="Note title" maxlength="70" required><textarea class="field" id="noteBody" placeholder="Write your notes here..." maxlength="3000" required style="min-height:180px"></textarea><label class="study-field-label" for="noteFolder">Save to folder</label><select class="field" id="noteFolder"><option value="">Unsorted</option></select><div class="design-field"><span class="design-field-title">Note Color</span><div class="color-options" role="radiogroup" aria-label="Note color"><label class="color-option" title="Blue"><input type="radio" name="noteColor" value="#bfdbfe" checked><span style="--swatch:#bfdbfe"></span></label><label class="color-option" title="Purple"><input type="radio" name="noteColor" value="#ddd6fe"><span style="--swatch:#ddd6fe"></span></label><label class="color-option" title="Pink"><input type="radio" name="noteColor" value="#fbcfe8"><span style="--swatch:#fbcfe8"></span></label><label class="color-option" title="Orange"><input type="radio" name="noteColor" value="#fed7aa"><span style="--swatch:#fed7aa"></span></label><label class="color-option" title="Yellow"><input type="radio" name="noteColor" value="#fef08a"><span style="--swatch:#fef08a"></span></label><label class="color-option" title="Green"><input type="radio" name="noteColor" value="#bbf7d0"><span style="--swatch:#bbf7d0"></span></label><label class="color-option" title="Teal"><input type="radio" name="noteColor" value="#a5f3fc"><span style="--swatch:#a5f3fc"></span></label></div><label class="color-wheel-control" for="noteCustomColor"><span>Custom color</span><input class="color-wheel-input" type="color" id="noteCustomColor" value="#bfdbfe" aria-label="Choose a custom note color"><span class="color-hex" id="noteColorHex">#BFDBFE</span></label></div><button class="primary-btn" type="submit">Save note</button></div></form>
+              <div class="card note-card"><div class="section-head"><h3>My Notes</h3><span class="tag" id="noteCount">0 saved</span></div><div id="notesList"><div class="empty-state">No notes yet. Create your first note!</div></div></div>
+            </div>
+          </div>
+
+          <div class="study-panel" id="tab-calculator">
+            <div class="card calculator">
+              <div class="calc-display" id="calcDisplay" aria-live="polite">0</div>
+              <div class="calc-grid" id="calcKeys">
+                <button class="calc-key clear" data-key="AC">AC</button><button class="calc-key" data-key="back">⌫</button><button class="calc-key operator" data-key="%">%</button><button class="calc-key operator" data-key="/">÷</button>
+                <button class="calc-key" data-key="7">7</button><button class="calc-key" data-key="8">8</button><button class="calc-key" data-key="9">9</button><button class="calc-key operator" data-key="*">×</button>
+                <button class="calc-key" data-key="4">4</button><button class="calc-key" data-key="5">5</button><button class="calc-key" data-key="6">6</button><button class="calc-key operator" data-key="-">−</button>
+                <button class="calc-key" data-key="1">1</button><button class="calc-key" data-key="2">2</button><button class="calc-key" data-key="3">3</button><button class="calc-key operator" data-key="+">+</button>
+                <button class="calc-key" data-key="+/-">±</button><button class="calc-key" data-key="0">0</button><button class="calc-key" data-key=".">.</button><button class="calc-key equal" data-key="=">=</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-
-      <section style="margin-top:25px">
-
-        <div class="card-header">
-          <h2>Quick Navigation</h2>
+      <!-- PARTNERS -->
+      <section class="page" id="page-partners">
+        <div class="page-heading"><div><div class="eyebrow">Learn together</div><h1>Partners</h1><p class="subtitle">Find classmates and study partners when student accounts are connected.</p></div><button class="secondary-btn" id="partnerInfo">About Partners</button></div>
+        <div class="study-intro"><h2>Your study community starts here.</h2><p>There are no student profiles or connections saved yet. Student discovery will be available after account and database setup.</p></div>
+        <div class="card partner-empty">
+          <h3>No study partners yet</h3>
+          <p>Once student accounts are connected, you can discover classmates and connect with study partners here.</p>
+          <button class="primary-btn" type="button" data-open-login>Log in to get started</button>
         </div>
-
-        <div class="shortcuts">
-
-          <button class="shortcut" onclick="showPage('passport')">
-            <img src="assets/icons/passport.png" alt="">
-            <strong>My Passport</strong>
-          </button>
-
-          <button class="shortcut" onclick="showPage('library')">
-            <img src="assets/icons/library.png" alt="">
-            <strong>Digital Library</strong>
-          </button>
-
-          <button class="shortcut" onclick="showPage('planner')">
-            <img src="assets/icons/planner.png" alt="">
-            <strong>My Planner</strong>
-          </button>
-
-          <button class="shortcut" onclick="showPage('notes')">
-            <img src="assets/icons/notes.png" alt="">
-            <strong>Personal Notes</strong>
-          </button>
-
-          <button class="shortcut" onclick="showPage('calculator')">
-            <img src="assets/icons/calculator.png" alt="">
-            <strong>Calculator</strong>
-          </button>
-
-          <button class="shortcut" onclick="showPage('flashcards')">
-            <img src="assets/icons/flashcards.png" alt="">
-            <strong>Flashcards</strong>
-          </button>
-
-          <button class="shortcut" onclick="showPage('community')">
-            <img src="assets/icons/community.png" alt="">
-            <strong>Community</strong>
-          </button>
-
-          <button class="shortcut" onclick="showPage('partners')">
-            <img src="assets/icons/study-partners.png" alt="">
-            <strong>Study Partners</strong>
-          </button>
-
-        </div>
-
       </section>
 
-    </section>
-
-
-    <!-- STUDENT PASSPORT -->
-    <section class="page-section" id="page-passport">
-      <div class="module-heading">
-        <h1>Student Passport</h1>
-        <p>My personal student portfolio.</p>
-      </div>
-
-      <div class="card">
-        <input class="form-control" id="passportName" placeholder="Full name">
-        <input class="form-control" id="passportEducation" placeholder="Grade level / College year">
-        <input class="form-control" id="passportSchool" placeholder="School name">
-        <textarea class="form-control" id="passportBio" placeholder="Personal introduction"></textarea>
-        <input class="form-control" id="passportSkills" placeholder="Skills (separate with commas)">
-        <button class="primary-btn" onclick="savePassport()">Save Passport</button>
-      </div>
-
-      <div class="module-list" id="passportDisplay"></div>
-    </section>
-
-
-    <!-- COMMUNITY -->
-    <section class="page-section" id="page-community">
-      <div class="module-heading">
-        <h1>Student Community</h1>
-        <p>Community discussions and posts.</p>
-      </div>
-
-      <div class="card">
-        <input class="form-control" id="postTitle" placeholder="Post title">
-        <select class="form-control" id="postCategory">
-          <option>Academics</option>
-          <option>Study Tips</option>
-          <option>General Discussion</option>
-          <option>Student Experiences</option>
-          <option>Achievements</option>
-        </select>
-        <textarea class="form-control" id="postContent" placeholder="Write your post..."></textarea>
-        <button class="primary-btn" onclick="createPost()">Publish Post</button>
-      </div>
-
-      <div class="module-list" id="communityPosts"></div>
-    </section>
-
-
-    <!-- LIBRARY -->
-    <section class="page-section" id="page-library">
-      <div class="module-heading">
-        <h1>Digital Library</h1>
-        <p>Personal resource collection.</p>
-      </div>
-
-      <div class="card">
-        <input class="form-control" id="resourceTitle" placeholder="Resource title">
-        <input class="form-control" id="resourceSubject" placeholder="Subject">
-        <input class="form-control" id="resourceLink" placeholder="Resource link (optional)">
-        <button class="primary-btn" onclick="addResource()">Add Resource</button>
-      </div>
-
-      <div class="module-list" id="libraryList"></div>
-    </section>
-
-
-    <!-- PLANNER -->
-    <section class="page-section" id="page-planner">
-      <div class="module-heading">
-        <h1>Student Planner</h1>
-        <p>My schedules, assignments, and deadlines.</p>
-      </div>
-
-      <div class="card">
-        <input class="form-control" id="taskTitle" placeholder="Task or assignment title">
-        <input class="form-control" id="taskDate" type="date">
-        <select class="form-control" id="taskType">
-          <option>Assignment</option>
-          <option>Examination</option>
-          <option>Class Schedule</option>
-          <option>Study Reminder</option>
-        </select>
-        <button class="primary-btn" onclick="addTask()">Add to Planner</button>
-      </div>
-
-      <div class="module-list" id="taskList"></div>
-    </section>
-
-
-    <!-- NOTES -->
-    <section class="page-section" id="page-notes">
-      <div class="module-heading">
-        <h1>Personal Notes</h1>
-        <p>My saved notes.</p>
-      </div>
-
-      <div class="card">
-        <input class="form-control" id="noteTitle" placeholder="Note title">
-        <textarea class="form-control" id="noteContent" placeholder="Write your notes here..."></textarea>
-        <button class="primary-btn" onclick="addNote()">Save Note</button>
-      </div>
-
-      <div class="module-list" id="notesList"></div>
-    </section>
-
-
-    <!-- CALCULATOR -->
-    <section class="page-section" id="page-calculator">
-      <div class="module-heading">
-        <h1>Student Calculator</h1>
-        <p>Academic calculator.</p>
-      </div>
-
-      <div class="card" style="max-width:400px">
-
-        <input class="form-control" id="calcDisplay" readonly placeholder="0">
-
-        <div class="calc-buttons">
-          <style>
-            .calc-buttons {
-              display: grid;
-              grid-template-columns: repeat(4, 1fr);
-              gap: 9px;
-            }
-            .calc-buttons button {
-              background: #e9f6ff;
-              border: none;
-              border-radius: 9px;
-              padding: 15px 5px;
-              color: #247eae;
-              font-weight: 700;
-            }
-            .calc-buttons button:hover {
-              background: #d5eeff;
-            }
-          </style>
-
-          <button onclick="calcClear()">AC</button>
-          <button onclick="calcAdd('(')">(</button>
-          <button onclick="calcAdd(')')">)</button>
-          <button onclick="calcAdd('/')">÷</button>
-
-          <button onclick="calcAdd('7')">7</button>
-          <button onclick="calcAdd('8')">8</button>
-          <button onclick="calcAdd('9')">9</button>
-          <button onclick="calcAdd('*')">×</button>
-
-          <button onclick="calcAdd('4')">4</button>
-          <button onclick="calcAdd('5')">5</button>
-          <button onclick="calcAdd('6')">6</button>
-          <button onclick="calcAdd('-')">−</button>
-
-          <button onclick="calcAdd('1')">1</button>
-          <button onclick="calcAdd('2')">2</button>
-          <button onclick="calcAdd('3')">3</button>
-          <button onclick="calcAdd('+')">+</button>
-
-          <button onclick="calcClear()">C</button>
-          <button onclick="calcAdd('0')">0</button>
-          <button onclick="calcAdd('.')">.</button>
-          <button onclick="calcResult()">=</button>
+      <!-- AI TUTOR -->
+      <section class="page" id="page-tutor">
+        <div class="page-heading"><div><div class="eyebrow">Your learning assistant</div><h1>AI Tutor</h1><p class="subtitle">Ask questions and get support with your lessons.</p></div><span class="tag">Demo interface</span></div>
+        <div class="tutor-layout">
+          <aside class="card tutor-aside"><img class="tutor-mascot-image" src="assets/images/piko-ai-tutor.png" alt="PiKo AI Tutor mascot" data-optional-image><h3>Welcome to PiKo AI Tutor</h3><p>Ask me about a lesson, concept, or school topic. I'm here to help you learn.</p><div style="margin-top:19px;text-align:left"><div class="eyebrow">Try asking</div><button class="small-btn tutor-prompt" style="margin-top:8px">Explain photosynthesis</button><button class="small-btn tutor-prompt" style="margin-top:7px">Help me study fractions</button><button class="small-btn tutor-prompt" style="margin-top:7px">What is a research design?</button></div></aside>
+          <div class="card chat-card"><div class="chat-head"><div><strong>PiKo AI Tutor</strong><div style="color:#7b8ba7;font-size:10px;font-weight:800">Learning assistant <span class="online-dot"></span></div></div></div><div class="chat-messages" id="chatMessages"><div class="empty-state tutor-empty">Start a new question. Messages in this session are not saved.</div></div><form class="chat-compose" id="chatForm"><input class="field" id="chatInput" placeholder="Type your question here..." maxlength="500" required><button class="primary-btn" type="submit">Send ↑</button></form><div class="disclaimer">This is a front-end demo. Connect a secure AI service to enable real AI-generated answers.</div></div>
         </div>
+      </section>
+    </main>
 
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+      <button class="nav-btn active" data-page="home"><img class="nav-image" src="assets/images/nav-home.png" alt="" data-optional-image><span>Home</span></button>
+      <button class="nav-btn" data-page="schedule"><img class="nav-image" src="assets/images/nav-schedule.png" alt="" data-optional-image><span>Schedule</span></button>
+      <button class="nav-btn" data-page="study"><img class="nav-image" src="assets/images/nav-study-table.png" alt="" data-optional-image><span>Study Table</span></button>
+      <button class="nav-btn" data-page="partners"><img class="nav-image" src="assets/images/nav-partners.png" alt="" data-optional-image><span>Partners</span></button>
+      <button class="nav-btn" data-page="tutor"><img class="nav-image" src="assets/images/nav-ai-tutor.png" alt="" data-optional-image><span>AI Tutor</span></button>
+    </nav>
+  </div>
+  <div class="auth-overlay" id="authOverlay" aria-hidden="true">
+    <section class="auth-panel" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <button class="auth-close" id="authClose" type="button" aria-label="Close login dialog">Close</button>
+      <div class="auth-brand"><img src="assets/images/piko-logo.png" alt="" data-optional-image><span>PiKo</span></div>
+      <div class="auth-tabs" role="tablist" aria-label="Account access">
+        <button class="auth-tab active" id="signInTab" type="button" role="tab" aria-selected="true">Log in</button>
+        <button class="auth-tab" id="signUpTab" type="button" role="tab" aria-selected="false">Create account</button>
       </div>
+      <h2 id="authTitle">Welcome back</h2>
+      <p class="auth-description" id="authDescription">Log in to access your PiKo account.</p>
+      <form id="authForm" class="auth-form">
+        <label id="nameFieldWrap" class="auth-field-wrap" hidden>
+          <span>Full name</span>
+          <input class="field" id="authName" name="name" type="text" autocomplete="name" placeholder="Enter your full name" maxlength="80">
+        </label>
+        <label class="auth-field-wrap">
+          <span>Email address</span>
+          <input class="field" id="authEmail" name="email" type="email" autocomplete="email" placeholder="name@example.com" required>
+        </label>
+        <label class="auth-field-wrap">
+          <span>Password</span>
+          <input class="field" id="authPassword" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" minlength="8" required>
+        </label>
+        <label id="confirmFieldWrap" class="auth-field-wrap" hidden>
+          <span>Confirm password</span>
+          <input class="field" id="authConfirmPassword" name="confirmPassword" type="password" autocomplete="new-password" placeholder="Re-enter your password" minlength="8">
+        </label>
+        <button class="primary-btn auth-submit" id="authSubmit" type="submit">Log in</button>
+      </form>
+      <button class="auth-forgot" id="forgotPassword" type="button">Forgot password?</button>
+      <p class="auth-note">This is the front-end account interface. Connect Firebase Authentication or another secure authentication service to enable real account access. Passwords are not stored by this page.</p>
     </section>
-
-
-    <!-- FLASHCARDS -->
-    <section class="page-section" id="page-flashcards">
-      <div class="module-heading">
-        <h1>Flashcards and Review</h1>
-        <p>My review decks.</p>
-      </div>
-
-      <div class="card">
-        <input class="form-control" id="deckTitle" placeholder="Deck title">
-        <input class="form-control" id="deckSubject" placeholder="Subject">
-        <button class="primary-btn" onclick="addDeck()">Create Deck</button>
-      </div>
-
-      <div class="module-list" id="decksList"></div>
-    </section>
-
-
-    <!-- STUDY PARTNERS -->
-    <section class="page-section" id="page-partners">
-      <div class="module-heading">
-        <h1>Study Partner Finder</h1>
-        <p>My study interests and preferences.</p>
-      </div>
-
-      <div class="card">
-        <input class="form-control" id="studyLevel" placeholder="Grade level or College year">
-        <input class="form-control" id="studySubjects" placeholder="Subjects of interest">
-        <input class="form-control" id="studyLanguage" placeholder="Preferred language">
-        <button class="primary-btn" onclick="saveStudyProfile()">Save Preferences</button>
-      </div>
-
-      <div class="module-list" id="studyDisplay"></div>
-    </section>
-
-
-    <!-- AI TUTOR -->
-    <section class="page-section" id="page-ai">
-      <div class="coming-card">
-        <img src="assets/images/piko-penguin.png" alt="PiKo Penguin">
-        <h2>PiKo AI Tutor</h2>
-        <p>
-          This feature is currently under development.
-          PiKo AI will be introduced in a future update.
-        </p>
-        <br>
-        <span class="soon-label">COMING SOON</span>
-      </div>
-    </section>
-
-
-    <!-- NOTIFICATIONS -->
-    <section class="page-section" id="page-notifications">
-      <div class="module-heading">
-        <h1>Notifications</h1>
-        <p>My recent notifications.</p>
-      </div>
-      <div class="card" id="notificationList">
-        <p style="font-size:12px;color:var(--muted)">No notifications yet.</p>
-      </div>
-    </section>
-
-
-    <!-- SETTINGS -->
-    <section class="page-section" id="page-settings">
-      <div class="module-heading">
-        <h1>Settings</h1>
-        <p>Account and application preferences.</p>
-      </div>
-
-      <div class="card">
-        <h3 style="font-size:14px;margin-bottom:15px">Profile Information</h3>
-        <input class="form-control" id="settingsName" placeholder="Display name">
-        <button class="primary-btn" onclick="updateName()">Update Profile</button>
-
-        <hr style="border:0;border-top:1px solid var(--border);margin:25px 0">
-
-        <h3 style="font-size:14px;margin-bottom:12px">Appearance</h3>
-        <button class="secondary-btn" onclick="toggleDarkMode()">Toggle Dark Mode</button>
-      </div>
-    </section>
-
-  </main>
-</div>
-
-
-<div class="toast" id="toast"></div>
-
-
-<script>
-/* =====================================
-   PIKO LOCAL DEMO APPLICATION
-===================================== */
-
-const $ = id => document.getElementById(id);
-
-function readData(key, fallback = []) {
-  try {
-    const value = JSON.parse(localStorage.getItem("piko_" + key));
-    return value ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function saveData(key, value) {
-  localStorage.setItem("piko_" + key, JSON.stringify(value));
-}
-
-function showToast(message) {
-  const toast = $("toast");
-  toast.textContent = message;
-  toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 2500);
-}
-
-
-/* IMAGE HANDLING
-   Missing image files are simply hidden.
-*/
-
-document.querySelectorAll("img").forEach(img => {
-  if (img.complete && img.naturalWidth > 0) {
-    img.classList.add("loaded");
-  }
-
-  img.addEventListener("load", () => {
-    img.classList.add("loaded");
-  });
-
-  img.addEventListener("error", () => {
-    img.classList.remove("loaded");
-  });
-});
-
-
-/* NAVIGATION */
-
-const pageNames = {
-  home: "Home",
-  passport: "Student Passport",
-  community: "Student Community",
-  library: "Digital Library",
-  planner: "Student Planner",
-  notes: "Personal Notes",
-  calculator: "Student Calculator",
-  flashcards: "Flashcards & Review",
-  partners: "Study Partner Finder",
-  ai: "AI Tutor",
-  notifications: "Notifications",
-  settings: "Settings"
-};
-
-function showPage(page) {
-  document.querySelectorAll(".page-section").forEach(section => {
-    section.classList.remove("active");
-  });
-
-  const target = $("page-" + page);
-  if (!target) return;
-
-  target.classList.add("active");
-
-  document.querySelectorAll(".nav-link").forEach(link => {
-    link.classList.toggle("active", link.dataset.page === page);
-  });
-
-  $("pageTitle").textContent = pageNames[page] || "PiKo";
-
-  $("sidebar").classList.remove("open");
-
-  if (page === "home") renderHome();
-  if (page === "notes") renderNotes();
-  if (page === "planner") renderTasks();
-  if (page === "community") renderPosts();
-  if (page === "library") renderLibrary();
-  if (page === "passport") renderPassport();
-  if (page === "flashcards") renderDecks();
-  if (page === "partners") renderStudyProfile();
-  if (page === "notifications") renderNotifications();
-  if (page === "settings") {
-    $("settingsName").value = localStorage.getItem("piko_name") || "";
-  }
-
-  window.scrollTo({top: 0, behavior: "smooth"});
-}
-
-document.querySelectorAll(".nav-link").forEach(link => {
-  link.addEventListener("click", () => showPage(link.dataset.page));
-});
-
-$("mobileMenu").addEventListener("click", () => {
-  $("sidebar").classList.toggle("open");
-});
-
-$("profileBtn").addEventListener("click", () => showPage("settings"));
-$("notificationBtn").addEventListener("click", () => showPage("notifications"));
-
-
-/* DASHBOARD DATE AND USER */
-
-function updateDate() {
-  const date = new Date();
-
-  $("currentDate").textContent = date.toLocaleDateString("en-PH", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  });
-}
-
-function updateUser() {
-  const name = localStorage.getItem("piko_name") || "Student";
-  $("welcomeName").textContent = name.split(" ")[0];
-  $("sidebarName").textContent = name;
-  $("sidebarAvatar").textContent = name.charAt(0).toUpperCase();
-  $("settingsName").value = name;
-}
-
-function addActivity(type, title, detail) {
-  const activities = readData("activities");
-
-  activities.unshift({
-    type,
-    title,
-    detail,
-    date: new Date().toISOString()
-  });
-
-  saveData("activities", activities.slice(0, 30));
-}
-
-const activityIconPaths = {
-  notes: "assets/icons/notes.png",
-  planner: "assets/icons/planner.png",
-  community: "assets/icons/community.png",
-  library: "assets/icons/library.png",
-  flashcards: "assets/icons/flashcards.png",
-  passport: "assets/icons/passport.png",
-  calculator: "assets/icons/calculator.png",
-  partners: "assets/icons/study-partners.png"
-};
-
-function renderHome() {
-  const activities = readData("activities");
-  const container = $("recentActivities");
-
-  if (!activities.length) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <img src="assets/images/empty-activity.png" alt="">
-        <h3>No recent activity yet</h3>
-        <p>Your recent work will appear here.</p>
-      </div>`;
-  } else {
-    container.innerHTML = activities.slice(0, 8).map(item => `
-      <div class="activity-item">
-        <div class="activity-icon">
-          <img src="${activityIconPaths[item.type] || activityIconPaths.notes}" alt="">
-        </div>
-        <div class="activity-info">
-          <strong>${escapeHTML(item.title)}</strong>
-          <p>${escapeHTML(item.detail || "")}</p>
-        </div>
-        <div class="activity-time">${timeAgo(item.date)}</div>
-      </div>
-    `).join("");
-  }
-
-  renderRecentNotes();
-  renderHomeTasks();
-}
-
-
-/* NOTES */
-
-function addNote() {
-  const title = $("noteTitle").value.trim();
-  const content = $("noteContent").value.trim();
-
-  if (!title || !content) {
-    showToast("Please enter a note title and content.");
-    return;
-  }
-
-  const notes = readData("notes");
-
-  notes.unshift({
-    id: Date.now(),
-    title,
-    content,
-    updatedAt: new Date().toISOString()
-  });
-
-  saveData("notes", notes);
-  addActivity("notes", "Created a new note", title);
-
-  $("noteTitle").value = "";
-  $("noteContent").value = "";
-
-  renderNotes();
-  showToast("Note saved successfully.");
-}
-
-function renderNotes() {
-  const notes = readData("notes");
-
-  $("notesList").innerHTML = notes.length
-    ? notes.map(note => `
-      <div class="module-entry">
-        <h3>${escapeHTML(note.title)}</h3>
-        <p>${escapeHTML(note.content)}</p>
-        <br>
-        <button class="secondary-btn" onclick="deleteNote(${note.id})">Delete</button>
-      </div>
-    `).join("")
-    : emptyMessage("No notes yet.");
-
-  renderRecentNotes();
-}
-
-function deleteNote(id) {
-  saveData("notes", readData("notes").filter(n => n.id !== id));
-  showToast("Note deleted.");
-  renderNotes();
-  renderHome();
-}
-
-function renderRecentNotes() {
-  const notes = readData("notes").slice(0, 3);
-
-  $("recentNotes").innerHTML = notes.length
-    ? notes.map(note => `
-      <div class="note-item">
-        <strong>${escapeHTML(note.title)}</strong>
-        <p>${escapeHTML(note.content.substring(0, 90))}</p>
-      </div>
-    `).join("")
-    : `<p style="color:var(--muted);font-size:11px">No saved notes yet.</p>`;
-}
-
-
-/* PLANNER */
-
-function addTask() {
-  const title = $("taskTitle").value.trim();
-  const date = $("taskDate").value;
-  const type = $("taskType").value;
-
-  if (!title || !date) {
-    showToast("Please enter a title and date.");
-    return;
-  }
-
-  const tasks = readData("tasks");
-
-  tasks.push({
-    id: Date.now(),
-    title,
-    date,
-    type,
-    done: false
-  });
-
-  saveData("tasks", tasks);
-  addActivity("planner", "Added a planner item", title);
-
-  $("taskTitle").value = "";
-  $("taskDate").value = "";
-
-  renderTasks();
-  renderHome();
-  showToast("Planner item added.");
-}
-
-function renderTasks() {
-  const tasks = readData("tasks").sort((a,b) => a.date.localeCompare(b.date));
-
-  $("taskList").innerHTML = tasks.length
-    ? tasks.map(task => `
-      <div class="module-entry">
-        <div class="task-item ${task.done ? "done" : ""}">
-          <input type="checkbox" ${task.done ? "checked" : ""}
-            onchange="toggleTask(${task.id})">
-          <label>${escapeHTML(task.title)}</label>
-          <span class="task-date">${escapeHTML(task.date)}</span>
-        </div>
-        <p>${escapeHTML(task.type)}</p>
-        <br>
-        <button class="secondary-btn" onclick="deleteTask(${task.id})">Delete</button>
-      </div>
-    `).join("")
-    : emptyMessage("No planner entries yet.");
-}
-
-function toggleTask(id) {
-  const tasks = readData("tasks").map(task => {
-    if (task.id === id) task.done = !task.done;
-    return task;
-  });
-
-  saveData("tasks", tasks);
-  renderTasks();
-  renderHome();
-}
-
-function deleteTask(id) {
-  saveData("tasks", readData("tasks").filter(t => t.id !== id));
-  renderTasks();
-  renderHome();
-}
-
-function renderHomeTasks() {
-  const tasks = readData("tasks").filter(t => !t.done).sort((a,b) => a.date.localeCompare(b.date)).slice(0, 5);
-
-  $("homeTasks").innerHTML = tasks.length
-    ? tasks.map(task => `
-      <div class="task-item">
-        <input type="checkbox" onchange="toggleTask(${task.id})">
-        <label>${escapeHTML(task.title)}</label>
-        <span class="task-date">${escapeHTML(task.date)}</span>
-      </div>
-    `).join("")
-    : `<div class="empty-state">
-        <h3>No upcoming tasks</h3>
-        <p>Your pending planner items will appear here.</p>
-       </div>`;
-}
-
-
-/* COMMUNITY */
-
-function createPost() {
-  const title = $("postTitle").value.trim();
-  const content = $("postContent").value.trim();
-  const category = $("postCategory").value;
-
-  if (!title || !content) {
-    showToast("Please complete your post.");
-    return;
-  }
-
-  const posts = readData("posts");
-
-  posts.unshift({
-    id: Date.now(),
-    title,
-    content,
-    category,
-    date: new Date().toISOString()
-  });
-
-  saveData("posts", posts);
-  addActivity("community", "Created a community post", title);
-
-  $("postTitle").value = "";
-  $("postContent").value = "";
-
-  renderPosts();
-  showToast("Post created.");
-}
-
-function renderPosts() {
-  const posts = readData("posts");
-
-  $("communityPosts").innerHTML = posts.length
-    ? posts.map(post => `
-      <div class="module-entry">
-        <h3>${escapeHTML(post.title)}</h3>
-        <p>${escapeHTML(post.content)}</p>
-        <p>Category: ${escapeHTML(post.category)}</p>
-        <br>
-        <button class="secondary-btn" onclick="deletePost(${post.id})">Delete</button>
-      </div>
-    `).join("")
-    : emptyMessage("No community posts yet.");
-}
-
-function deletePost(id) {
-  saveData("posts", readData("posts").filter(p => p.id !== id));
-  renderPosts();
-}
-
-
-/* LIBRARY */
-
-function addResource() {
-  const title = $("resourceTitle").value.trim();
-  const subject = $("resourceSubject").value.trim();
-  const link = $("resourceLink").value.trim();
-
-  if (!title || !subject) {
-    showToast("Enter a resource title and subject.");
-    return;
-  }
-
-  if (link && !/^https?:\/\//i.test(link)) {
-    showToast("Please enter a valid http or https link.");
-    return;
-  }
-
-  const resources = readData("resources");
-
-  resources.unshift({
-    id: Date.now(),
-    title,
-    subject,
-    link
-  });
-
-  saveData("resources", resources);
-  addActivity("library", "Added a library resource", title);
-
-  $("resourceTitle").value = "";
-  $("resourceSubject").value = "";
-  $("resourceLink").value = "";
-
-  renderLibrary();
-  showToast("Resource saved.");
-}
-
-function renderLibrary() {
-  const resources = readData("resources");
-
-  $("libraryList").innerHTML = resources.length
-    ? resources.map(item => `
-      <div class="module-entry">
-        <h3>${escapeHTML(item.title)}</h3>
-        <p>${escapeHTML(item.subject)}</p>
-        ${item.link ? `<a href="${escapeHTML(item.link)}" target="_blank" rel="noopener noreferrer" class="text-link">Open Resource</a>` : ""}
-      </div>
-    `).join("")
-    : emptyMessage("No resources saved yet.");
-}
-
-
-/* PASSPORT */
-
-function savePassport() {
-  const passport = {
-    name: $("passportName").value.trim(),
-    education: $("passportEducation").value.trim(),
-    school: $("passportSchool").value.trim(),
-    bio: $("passportBio").value.trim(),
-    skills: $("passportSkills").value.trim()
-  };
-
-  saveData("passport", passport);
-  addActivity("passport", "Updated student passport", passport.name || "Student profile");
-  renderPassport();
-  showToast("Passport saved.");
-}
-
-function renderPassport() {
-  const data = readData("passport", null);
-  if (!data) return;
-
-  $("passportName").value = data.name || "";
-  $("passportEducation").value = data.education || "";
-  $("passportSchool").value = data.school || "";
-  $("passportBio").value = data.bio || "";
-  $("passportSkills").value = data.skills || "";
-
-  $("passportDisplay").innerHTML = `
-    <div class="module-entry">
-      <h3>${escapeHTML(data.name || "Student")}</h3>
-      <p>${escapeHTML(data.education)} · ${escapeHTML(data.school)}</p>
-      <p>${escapeHTML(data.bio)}</p>
-      <p>${escapeHTML(data.skills)}</p>
-    </div>`;
-}
-
-
-/* FLASHCARDS */
-
-function addDeck() {
-  const title = $("deckTitle").value.trim();
-  const subject = $("deckSubject").value.trim();
-
-  if (!title || !subject) {
-    showToast("Enter a deck title and subject.");
-    return;
-  }
-
-  const decks = readData("decks");
-  decks.unshift({id: Date.now(), title, subject, cards: []});
-
-  saveData("decks", decks);
-  addActivity("flashcards", "Created a flashcard deck", title);
-
-  $("deckTitle").value = "";
-  $("deckSubject").value = "";
-
-  renderDecks();
-  showToast("Deck created.");
-}
-
-function renderDecks() {
-  const decks = readData("decks");
-
-  $("decksList").innerHTML = decks.length
-    ? decks.map(deck => `
-      <div class="module-entry">
-        <h3>${escapeHTML(deck.title)}</h3>
-        <p>${escapeHTML(deck.subject)}</p>
-        <p>${deck.cards.length} cards</p>
-      </div>
-    `).join("")
-    : emptyMessage("No flashcard decks yet.");
-}
-
-
-/* STUDY PARTNERS */
-
-function saveStudyProfile() {
-  const data = {
-    level: $("studyLevel").value.trim(),
-    subjects: $("studySubjects").value.trim(),
-    language: $("studyLanguage").value.trim()
-  };
-
-  if (!data.level || !data.subjects) {
-    showToast("Please complete your study preferences.");
-    return;
-  }
-
-  saveData("studyProfile", data);
-  addActivity("partners", "Updated study preferences", data.subjects);
-  renderStudyProfile();
-  showToast("Preferences saved.");
-}
-
-function renderStudyProfile() {
-  const data = readData("studyProfile", null);
-  if (!data) return;
-
-  $("studyLevel").value = data.level || "";
-  $("studySubjects").value = data.subjects || "";
-  $("studyLanguage").value = data.language || "";
-
-  $("studyDisplay").innerHTML = `
-    <div class="module-entry">
-      <h3>My Study Preferences</h3>
-      <p>${escapeHTML(data.level)}</p>
-      <p>${escapeHTML(data.subjects)}</p>
-      <p>${escapeHTML(data.language)}</p>
-    </div>`;
-}
-
-
-/* CALCULATOR */
-
-function calcAdd(value) {
-  $("calcDisplay").value += value;
-}
-
-function calcClear() {
-  $("calcDisplay").value = "";
-}
-
-function calcResult() {
-  const expression = $("calcDisplay").value;
-
-  if (!/^[0-9+\-*/().\s]+$/.test(expression)) {
-    showToast("Invalid calculation.");
-    return;
-  }
-
-  try {
-    const result = Function('"use strict"; return (' + expression + ')')();
-
-    if (!Number.isFinite(result)) throw new Error("Invalid result");
-
-    $("calcDisplay").value = String(result);
-    addActivity("calculator", "Used student calculator", String(result));
-  } catch {
-    showToast("Unable to calculate.");
-  }
-}
-
-
-/* USER SETTINGS */
-
-function updateName() {
-  const name = $("settingsName").value.trim();
-
-  if (!name) {
-    showToast("Enter your display name.");
-    return;
-  }
-
-  localStorage.setItem("piko_name", name);
-  updateUser();
-  addActivity("passport", "Updated account profile", name);
-  showToast("Profile updated.");
-}
-
-
-/* DARK MODE */
-
-function toggleDarkMode() {
-  document.body.classList.toggle("dark");
-
-  localStorage.setItem(
-    "piko_dark",
-    document.body.classList.contains("dark") ? "on" : "off"
-  );
-}
-
-$("darkMode").addEventListener("click", toggleDarkMode);
-
-
-/* NOTIFICATIONS */
-
-function renderNotifications() {
-  $("notificationList").innerHTML =
-    `<p style="font-size:12px;color:var(--muted)">No notifications yet.</p>`;
-}
-
-
-/* SEARCH */
-
-$("globalSearch").addEventListener("keydown", event => {
-  if (event.key !== "Enter") return;
-
-  const query = event.target.value.trim().toLowerCase();
-
-  if (!query) return;
-
-  const modules = {
-    home: ["home"],
-    passport: ["passport", "achievement", "certificate"],
-    community: ["community", "post", "discussion"],
-    library: ["library", "resource", "reviewer"],
-    planner: ["planner", "task", "assignment", "calendar"],
-    notes: ["notes", "notebook"],
-    calculator: ["calculator"],
-    flashcards: ["flashcards", "review", "deck"],
-    partners: ["study partner", "study group"],
-    ai: ["ai tutor"],
-    notifications: ["notifications"],
-    settings: ["settings", "profile"]
-  };
-
-  const match = Object.entries(modules).find(([page,words]) =>
-    words.some(word => word.includes(query) || query.includes(word))
-  );
-
-  if (match) {
-    showPage(match[0]);
-    showToast("Opened " + pageNames[match[0]]);
-  } else {
-    showToast("No matching navigation item found.");
-  }
-});
-
-
-/* UTILITIES */
-
-function emptyMessage(message) {
-  return `<div class="module-entry"><p>${escapeHTML(message)}</p></div>`;
-}
-
-function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;"
-  })[char]);
-}
-
-function timeAgo(date) {
-  const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
-
-  if (!Number.isFinite(seconds)) return "";
-
-  if (seconds < 60) return "Just now";
-  if (seconds < 3600) return Math.floor(seconds/60) + "m ago";
-  if (seconds < 86400) return Math.floor(seconds/3600) + "h ago";
-  return Math.floor(seconds/86400) + "d ago";
-}
-
-
-/* INITIALIZE */
-
-if (localStorage.getItem("piko_dark") === "on") {
-  document.body.classList.add("dark");
-}
-
-updateDate();
-updateUser();
-renderHome();
-
-</script>
-
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+
+    // Optional GitHub image assets: hide an image slot cleanly until its file is uploaded.
+    document.querySelectorAll('img[data-optional-image]').forEach(image => {
+      image.addEventListener('error', () => { image.hidden = true; }, { once: true });
+    });
+
+    // PiKo front-end prototype. Personal study data is stored locally in this browser.
+    // Remove old prototype-only chat and student/partner records. Personal study notes and cards are retained.
+    Object.keys(localStorage).forEach(key => {
+      if (/^piko_.*(chat|message|student|partner|connection|friend_request)/i.test(key)) {
+        localStorage.removeItem(key);
+      }
+    });
+    Object.keys(sessionStorage).forEach(key => {
+      if (/^piko_.*(chat|message|student|partner|connection|friend_request)/i.test(key)) sessionStorage.removeItem(key);
+    });
+
+    const pageNames = ['home', 'schedule', 'study', 'partners', 'tutor'];
+    function showPage(page) {
+      if (!pageNames.includes(page)) return;
+      document.querySelectorAll('.page').forEach(el => el.classList.toggle('active', el.id === `page-${page}`));
+      document.querySelectorAll('.nav-btn[data-page]').forEach(el => el.classList.toggle('active', el.dataset.page === page));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    document.querySelectorAll('.nav-btn[data-page]').forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
+    document.querySelectorAll('[data-go]').forEach(btn => btn.addEventListener('click', () => {
+      showPage(btn.dataset.go);
+      if (btn.dataset.studyTab) activateStudyTab(btn.dataset.studyTab);
+    }));
+
+    let toastTimer;
+    function toast(message) {
+      const el = document.getElementById('toast');
+      el.textContent = message;
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+    }
+    const themeButton = document.getElementById('themeButton');
+    if (localStorage.getItem('piko_theme') === 'dark') document.body.classList.add('dark-theme');
+    themeButton.addEventListener('click', () => {
+      const isDark = document.body.classList.toggle('dark-theme');
+      localStorage.setItem('piko_theme', isDark ? 'dark' : 'light');
+      themeButton.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+      themeButton.title = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+      toast(isDark ? 'Dark mode enabled.' : 'Light mode enabled.');
+    });
+    document.getElementById('notificationButton').addEventListener('click', () => toast('You are all caught up.'));
+
+    // Front-end login/create-account modal. Connect a real auth provider before production use.
+    const authOverlay = document.getElementById('authOverlay');
+    const authForm = document.getElementById('authForm');
+    const signInTab = document.getElementById('signInTab');
+    const signUpTab = document.getElementById('signUpTab');
+    let authMode = 'login';
+    function setAuthMode(mode) {
+      authMode = mode;
+      const isSignup = mode === 'signup';
+      signInTab.classList.toggle('active', !isSignup);
+      signUpTab.classList.toggle('active', isSignup);
+      signInTab.setAttribute('aria-selected', String(!isSignup));
+      signUpTab.setAttribute('aria-selected', String(isSignup));
+      document.getElementById('authTitle').textContent = isSignup ? 'Create your PiKo account' : 'Welcome back';
+      document.getElementById('authDescription').textContent = isSignup ? 'Set up your student account to get started.' : 'Log in to access your PiKo account.';
+      document.getElementById('nameFieldWrap').hidden = !isSignup;
+      document.getElementById('confirmFieldWrap').hidden = !isSignup;
+      document.getElementById('authName').required = isSignup;
+      document.getElementById('authConfirmPassword').required = isSignup;
+      document.getElementById('authPassword').autocomplete = isSignup ? 'new-password' : 'current-password';
+      document.getElementById('authSubmit').textContent = isSignup ? 'Create account' : 'Log in';
+      document.getElementById('forgotPassword').hidden = isSignup;
+    }
+    function openAuth(mode = 'login') {
+      setAuthMode(mode);
+      authOverlay.classList.add('open');
+      authOverlay.setAttribute('aria-hidden', 'false');
+      setTimeout(() => document.getElementById('authEmail').focus(), 40);
+    }
+    function closeAuth() {
+      authOverlay.classList.remove('open');
+      authOverlay.setAttribute('aria-hidden', 'true');
+    }
+    document.getElementById('loginButton').addEventListener('click', () => openAuth('login'));
+    document.querySelectorAll('[data-open-login]').forEach(btn => btn.addEventListener('click', () => openAuth('login')));
+    document.getElementById('authClose').addEventListener('click', closeAuth);
+    authOverlay.addEventListener('click', e => { if (e.target === authOverlay) closeAuth(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && authOverlay.classList.contains('open')) closeAuth(); });
+    signInTab.addEventListener('click', () => setAuthMode('login'));
+    signUpTab.addEventListener('click', () => setAuthMode('signup'));
+    document.getElementById('forgotPassword').addEventListener('click', () => toast('Password recovery requires a connected authentication service.'));
+    authForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const email = document.getElementById('authEmail').value.trim();
+      const password = document.getElementById('authPassword').value;
+      const name = document.getElementById('authName').value.trim();
+      const confirmPassword = document.getElementById('authConfirmPassword').value;
+      if (!email || password.length < 8) { toast('Enter a valid email and a password with at least 8 characters.'); return; }
+      if (authMode === 'signup' && !name) { toast('Please enter your full name.'); return; }
+      if (authMode === 'signup' && password !== confirmPassword) { toast('Your passwords do not match.'); return; }
+      toast('The login form is ready. Connect Firebase Authentication to enable account access.');
+    });
+    document.getElementById('globalSearch').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && e.target.value.trim()) toast(`Search can be connected to your data.`);
+    });
+
+    // Tasks and calendar
+    const today = new Date();
+    let calendarDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    let tasks = loadJSON('piko_tasks', []);
+    tasks = tasks.filter(task => !['Review Math notes', 'Finish research reading'].includes(task.title));
+    saveJSON('piko_tasks', tasks);
+    function loadJSON(key, fallback) {
+      try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; }
+      catch { return fallback; }
+    }
+    function saveJSON(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
+
+    // Preset swatches and the native color wheel stay in sync for each creation form.
+    function bindColorPicker(formId, radioName, pickerId, hexId) {
+      const form = document.getElementById(formId);
+      const picker = document.getElementById(pickerId);
+      const hex = document.getElementById(hexId);
+      if (!form || !picker || !hex) return;
+      const updateHex = value => { hex.textContent = value.toUpperCase(); };
+      form.querySelectorAll(`input[name="${radioName}"]`).forEach(radio => {
+        radio.addEventListener('change', () => {
+          picker.value = radio.value;
+          updateHex(picker.value);
+        });
+      });
+      picker.addEventListener('input', () => {
+        form.querySelectorAll(`input[name="${radioName}"]`).forEach(radio => { radio.checked = false; });
+        updateHex(picker.value);
+      });
+      form.addEventListener('reset', () => {
+        window.setTimeout(() => {
+          const selected = form.querySelector(`input[name="${radioName}"]:checked`);
+          if (selected) picker.value = selected.value;
+          updateHex(picker.value);
+        }, 0);
+      });
+      updateHex(picker.value);
+    }
+    function getDesignColor(form, radioName, pickerId) {
+      const selectedPreset = form.querySelector(`input[name="${radioName}"]:checked`);
+      const customPicker = document.getElementById(pickerId);
+      return selectedPreset?.value || customPicker?.value || '#bfdbfe';
+    }
+    bindColorPicker('folderForm', 'folderColor', 'folderCustomColor', 'folderColorHex');
+    bindColorPicker('flashcardForm', 'flashcardColor', 'flashcardCustomColor', 'flashcardColorHex');
+    bindColorPicker('noteForm', 'noteColor', 'noteCustomColor', 'noteColorHex');
+
+    function renderTasks() {
+      const list = document.getElementById('taskList');
+      list.innerHTML = '';
+      if (!tasks.length) list.innerHTML = '<div class="empty-state">No tasks yet. Add one to get started.</div>';
+      tasks.forEach(task => {
+        const row = document.createElement('label');
+        row.className = `task-item ${task.done ? 'done' : ''}`;
+        row.innerHTML = `<input type="checkbox" ${task.done ? 'checked' : ''} aria-label="Mark task complete"><div class="task-info"><strong></strong><span></span></div>`;
+        row.querySelector('strong').textContent = task.title;
+        row.querySelector('span').textContent = task.date || 'No date set';
+        row.querySelector('input').addEventListener('change', e => {
+          task.done = e.target.checked; saveJSON('piko_tasks', tasks); renderTasks();
+        });
+        list.appendChild(row);
+      });
+      const remaining = tasks.filter(t => !t.done).length;
+      document.getElementById('taskSummary').textContent = `${remaining} remaining`;
+      document.getElementById('homeTaskCount').textContent = `${remaining} Task${remaining === 1 ? '' : 's'}`;
+    }
+    document.getElementById('taskForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const input = document.getElementById('taskInput');
+      const title = input.value.trim();
+      if (!title) return;
+      tasks.unshift({ id: Date.now(), title, date: 'Added today', done: false });
+      saveJSON('piko_tasks', tasks); renderTasks(); input.value = ''; toast('Task added successfully!');
+    });
+    document.getElementById('focusAddTask').addEventListener('click', () => document.getElementById('taskInput').focus());
+    function renderCalendar() {
+      const year = calendarDate.getFullYear(), month = calendarDate.getMonth();
+      document.getElementById('calendarMonth').textContent = calendarDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      const grid = document.getElementById('calendarGrid');
+      grid.innerHTML = '';
+      ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(day => {
+        const el = document.createElement('div'); el.className = 'weekday'; el.textContent = day; grid.appendChild(el);
+      });
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const prevDays = new Date(year, month, 0).getDate();
+      for (let i = 0; i < 42; i++) {
+        let day, outside = false;
+        if (i < firstDay) { day = prevDays - firstDay + i + 1; outside = true; }
+        else if (i >= firstDay + daysInMonth) { day = i - firstDay - daysInMonth + 1; outside = true; }
+        else day = i - firstDay + 1;
+        const cell = document.createElement('button');
+        cell.className = 'date-cell';
+        const isToday = !outside && day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+        if (outside) cell.classList.add('muted');
+        if (isToday) cell.classList.add('today');
+        cell.textContent = day;
+        cell.addEventListener('click', () => toast(`${calendarDate.toLocaleDateString('en-US',{month:'long'})} ${day}, ${year}`));
+        grid.appendChild(cell);
+      }
+    }
+    document.getElementById('prevMonth').addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth()-1); renderCalendar(); });
+    document.getElementById('nextMonth').addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth()+1); renderCalendar(); });
+    renderTasks(); renderCalendar();
+
+    // Study Table chooser and tool panels
+    const studyChoiceView = document.getElementById('studyChoiceView');
+    const studyWorkspace = document.getElementById('studyWorkspace');
+    const studyCurrentLabel = document.getElementById('studyCurrentLabel');
+    const studyToolNames = { folder: 'Folder', flashcards: 'Flashcards', notes: 'Notes', calculator: 'Calculate' };
+    function activateStudyTab(tab) {
+      const target = document.getElementById(`tab-${tab}`);
+      if (!target) return;
+      studyChoiceView.hidden = true;
+      studyWorkspace.hidden = false;
+      document.querySelectorAll('.study-panel').forEach(panel => panel.classList.toggle('active', panel === target));
+      studyCurrentLabel.textContent = studyToolNames[tab] || 'Study tool';
+    }
+    function returnToStudyChoices() {
+      document.querySelectorAll('.study-panel').forEach(panel => panel.classList.remove('active'));
+      studyWorkspace.hidden = true;
+      studyChoiceView.hidden = false;
+    }
+    document.querySelectorAll('[data-study-choice]').forEach(btn => btn.addEventListener('click', () => activateStudyTab(btn.dataset.studyChoice)));
+    document.getElementById('backToStudyChoices').addEventListener('click', returnToStudyChoices);
+
+    // Flashcards (stored locally)
+    let flashcards = loadJSON('piko_flashcards', []);
+    flashcards = flashcards.filter(card => ![
+      'What is the process by which plants make their own food?',
+      'What is the largest planet in our solar system?',
+      'What is 12 × 8?'
+    ].includes(card.q));
+    saveJSON('piko_flashcards', flashcards);
+    let currentCard = 0, showingAnswer = false;
+    function renderFlashcard() {
+      const view = document.getElementById('flashcardView');
+      if (!flashcards.length) {
+        document.getElementById('flashcardKicker').textContent = 'Your deck is empty';
+        document.getElementById('flashcardText').textContent = 'Create your first flashcard';
+        view.querySelector('span').textContent = 'Add a question and answer using the form.';
+      } else {
+        currentCard = (currentCard + flashcards.length) % flashcards.length;
+        const activeFlashcard = flashcards[currentCard];
+        view.style.setProperty('--card-accent', activeFlashcard.color || '#bfdbfe');
+        document.getElementById('flashcardKicker').textContent = `${showingAnswer ? 'Answer' : 'Question'} · ${currentCard + 1} / ${flashcards.length}`;
+        document.getElementById('flashcardText').textContent = showingAnswer ? activeFlashcard.a : activeFlashcard.q;
+        view.querySelector('span').textContent = showingAnswer ? 'Tap to see the question' : 'Tap the card to reveal the answer';
+      }
+      document.getElementById('flashcardCount').innerHTML = `<span class="tag">${flashcards.length} flashcard${flashcards.length === 1 ? '' : 's'} saved</span>`;
+    }
+    function flipFlashcard() { if (!flashcards.length) return; showingAnswer = !showingAnswer; renderFlashcard(); }
+    document.getElementById('flashcardView').addEventListener('click', flipFlashcard);
+    document.getElementById('flipCard').addEventListener('click', flipFlashcard);
+    document.getElementById('prevCard').addEventListener('click', () => { currentCard--; showingAnswer = false; renderFlashcard(); });
+    document.getElementById('nextCard').addEventListener('click', () => { currentCard++; showingAnswer = false; renderFlashcard(); });
+    document.getElementById('flashcardForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const q = document.getElementById('flashQuestion').value.trim();
+      const a = document.getElementById('flashAnswer').value.trim();
+      if (!q || !a) return;
+      const color = getDesignColor(e.target, 'flashcardColor', 'flashcardCustomColor');
+      flashcards.push({ q, a, color, folderId: document.getElementById('flashcardFolder').value || null }); saveJSON('piko_flashcards', flashcards); currentCard = flashcards.length - 1; showingAnswer = false; renderFlashcard(); renderFolders(); e.target.reset(); toast('Flashcard saved!');
+    });
+    renderFlashcard();
+
+    // Calculator: accepts only calculator characters; no eval().
+    let calcExpression = '';
+    const calcDisplay = document.getElementById('calcDisplay');
+    function calculateExpression(expression) {
+      if (!/^[0-9+\-*/%.() ]+$/.test(expression)) throw new Error('Invalid expression');
+      const tokens = expression.match(/\d*\.?\d+|[+\-*/%()]|\s+/g)?.filter(t => !/^\s+$/.test(t)) || [];
+      let pos = 0;
+      function parsePrimary() {
+        const token = tokens[pos++];
+        if (token === '(') { const value = parseAddSub(); if (tokens[pos++] !== ')') throw new Error('Missing )'); return value; }
+        if (token === '-') return -parsePrimary();
+        if (token === '+') return parsePrimary();
+        const n = Number(token); if (!Number.isFinite(n)) throw new Error('Invalid number'); return n;
+      }
+      function parseMulDiv() {
+        let value = parsePrimary();
+        while (['*','/','%'].includes(tokens[pos])) {
+          const op = tokens[pos++], right = parsePrimary();
+          if ((op === '/' || op === '%') && right === 0) throw new Error('Cannot divide by zero');
+          value = op === '*' ? value * right : op === '/' ? value / right : value % right;
+        }
+        return value;
+      }
+      function parseAddSub() {
+        let value = parseMulDiv();
+        while (tokens[pos] === '+' || tokens[pos] === '-') { const op = tokens[pos++], right = parseMulDiv(); value = op === '+' ? value + right : value - right; }
+        return value;
+      }
+      if (!tokens.length) return 0;
+      const result = parseAddSub(); if (pos !== tokens.length || !Number.isFinite(result)) throw new Error('Invalid calculation'); return result;
+    }
+    document.getElementById('calcKeys').addEventListener('click', e => {
+      const btn = e.target.closest('[data-key]'); if (!btn) return;
+      const key = btn.dataset.key;
+      if (key === 'AC') calcExpression = '';
+      else if (key === 'back') calcExpression = calcExpression.slice(0, -1);
+      else if (key === '+/-') {
+        try { calcExpression = String(-calculateExpression(calcExpression)); } catch { calcExpression = calcExpression ? `-(${calcExpression})` : '-'; }
+      } else if (key === '=') {
+        try { calcExpression = String(Number(calculateExpression(calcExpression).toPrecision(10))); }
+        catch (err) { calcDisplay.textContent = err.message === 'Cannot divide by zero' ? 'Cannot divide by 0' : 'Error'; calcExpression = ''; return; }
+      } else {
+        if (calcExpression.length < 40) calcExpression += key;
+      }
+      calcDisplay.textContent = calcExpression || '0';
+    });
+
+    // Notes (stored locally in this browser)
+    let notes = loadJSON('piko_notes', []);
+    let folders = loadJSON('piko_folders', []);
+    function renderNotes() {
+      const wrap = document.getElementById('notesList');
+      document.getElementById('noteCount').textContent = `${notes.length} saved`;
+      if (!notes.length) { wrap.innerHTML = '<div class="empty-state">No notes yet. Create your first note!</div>'; return; }
+      wrap.innerHTML = '';
+      notes.forEach((note, index) => {
+        const item = document.createElement('article'); item.className = 'note-entry';
+        item.style.setProperty('--item-accent', note.color || '#bfdbfe');
+        const title = document.createElement('strong'); title.textContent = note.title;
+        const body = document.createElement('p'); body.textContent = note.body;
+        const folder = folders.find(entry => String(entry.id) === String(note.folderId || ''));
+        const folderLabel = document.createElement('span'); folderLabel.className = 'tag'; folderLabel.textContent = folder ? folder.name : 'Unsorted';
+        const remove = document.createElement('button'); remove.className = 'small-btn'; remove.textContent = 'Delete';
+        remove.addEventListener('click', () => { notes.splice(index, 1); saveJSON('piko_notes', notes); renderNotes(); renderFolders(); toast('Note deleted.'); });
+        item.append(title, body, folderLabel, remove); wrap.appendChild(item);
+      });
+    }
+    document.getElementById('noteForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const title = document.getElementById('noteTitle').value.trim();
+      const body = document.getElementById('noteBody').value.trim();
+      if (!title || !body) return;
+      const color = getDesignColor(e.target, 'noteColor', 'noteCustomColor');
+      notes.unshift({ title, body, color, folderId: document.getElementById('noteFolder').value || null, created: new Date().toISOString() }); saveJSON('piko_notes', notes); renderNotes(); renderFolders(); e.target.reset(); toast('Note saved!');
+    });
+    renderNotes();
+
+    // Folders organize notes and flashcards. All folder data is saved locally.
+    function renderFolderSelectors() {
+      ['flashcardFolder', 'noteFolder'].forEach(id => {
+        const select = document.getElementById(id);
+        const previous = select.value;
+        select.innerHTML = '';
+        const unsorted = document.createElement('option');
+        unsorted.value = ''; unsorted.textContent = 'Unsorted'; select.appendChild(unsorted);
+        folders.forEach(folder => {
+          const option = document.createElement('option');
+          option.value = String(folder.id); option.textContent = folder.name; select.appendChild(option);
+        });
+        if ([...select.options].some(option => option.value === previous)) select.value = previous;
+      });
+    }
+    function renderFolders() {
+      const list = document.getElementById('folderList');
+      document.getElementById('folderCount').textContent = `${folders.length} folder${folders.length === 1 ? '' : 's'}`;
+      list.innerHTML = '';
+      if (!folders.length) {
+        list.innerHTML = '<div class="empty-state">No folders yet. Create your first folder.</div>';
+      } else {
+        folders.forEach(folder => {
+          const noteTotal = notes.filter(note => String(note.folderId || '') === String(folder.id)).length;
+          const cardTotal = flashcards.filter(card => String(card.folderId || '') === String(folder.id)).length;
+          const item = document.createElement('article'); item.className = 'folder-item';
+          item.style.setProperty('--item-accent', folder.color || '#bfdbfe');
+          const title = document.createElement('strong'); title.textContent = folder.name;
+          const details = document.createElement('p'); details.textContent = `${noteTotal} note${noteTotal === 1 ? '' : 's'} · ${cardTotal} flashcard${cardTotal === 1 ? '' : 's'}`;
+          const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'small-btn'; remove.textContent = 'Delete folder';
+          remove.addEventListener('click', () => {
+            folders = folders.filter(entry => String(entry.id) !== String(folder.id));
+            notes.forEach(note => { if (String(note.folderId || '') === String(folder.id)) note.folderId = null; });
+            flashcards.forEach(card => { if (String(card.folderId || '') === String(folder.id)) card.folderId = null; });
+            saveJSON('piko_folders', folders); saveJSON('piko_notes', notes); saveJSON('piko_flashcards', flashcards);
+            renderFolders(); renderFolderSelectors(); renderNotes(); renderFlashcard();
+            toast('Folder deleted. Your notes and flashcards were kept as unsorted.');
+          });
+          item.append(title, details, remove); list.appendChild(item);
+        });
+      }
+      renderFolderSelectors();
+    }
+    document.getElementById('folderForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const input = document.getElementById('folderName');
+      const name = input.value.trim();
+      if (!name) return;
+      if (folders.some(folder => folder.name.toLowerCase() === name.toLowerCase())) {
+        toast('A folder with that name already exists.'); return;
+      }
+      const color = getDesignColor(e.target, 'folderColor', 'folderCustomColor');
+      folders.unshift({ id: String(Date.now()), name, color, created: new Date().toISOString() });
+      saveJSON('piko_folders', folders); renderFolders(); e.target.reset(); toast('Folder created.');
+    });
+    renderFolders();
+
+    // No sample partner profiles are loaded. Real student discovery needs a connected database.
+    document.getElementById('partnerInfo').addEventListener('click', () => toast('Student discovery will be available after account and database setup.'));
+
+    // AI Tutor is intentionally a front-end demo. Add a secure server-side AI integration for real answers.
+    const chatMessages = document.getElementById('chatMessages');
+    function addBubble(text, type) { const placeholder = chatMessages.querySelector('.tutor-empty'); if (placeholder) placeholder.remove(); const bubble = document.createElement('div'); bubble.className = `bubble ${type}`; bubble.textContent = text; chatMessages.appendChild(bubble); chatMessages.scrollTop = chatMessages.scrollHeight; }
+    function demoTutorReply(question) {
+      const q = question.toLowerCase();
+      if (q.includes('photosynthesis')) return 'Photosynthesis is the process plants use to make their own food. They use sunlight, water, and carbon dioxide to produce glucose and release oxygen.';
+      if (q.includes('fraction')) return 'A fraction represents part of a whole. The top number is the numerator, and the bottom number is the denominator. For example, 1/2 means one out of two equal parts.';
+      if (q.includes('research design')) return 'A research design is the overall plan or structure used to answer a research question. It explains how information will be collected and analyzed.';
+      return 'Thanks for your question! This PiKo screen is currently a front-end demo, so it cannot generate a real AI answer yet. Connect an AI model through a secure backend to enable personalized explanations. For now, try asking about photosynthesis, fractions, or research design.';
+    }
+    function sendTutorQuestion(question) { if (!question.trim()) return; addBubble(question.trim(), 'user'); setTimeout(() => addBubble(demoTutorReply(question), 'bot'), 350); }
+    document.getElementById('chatForm').addEventListener('submit', e => { e.preventDefault(); const input = document.getElementById('chatInput'); const q = input.value.trim(); if (!q) return; input.value = ''; sendTutorQuestion(q); });
+    document.querySelectorAll('.tutor-prompt').forEach(btn => btn.addEventListener('click', () => sendTutorQuestion(btn.textContent.trim())));
+  </script>
 </body>
 </html>
